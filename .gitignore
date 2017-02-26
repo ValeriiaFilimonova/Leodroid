@@ -1,0 +1,8 @@
+.idea/
+MovingService/
+SpeechSynthesisService/
+bin/
+lib/
+out/
+
+*.iml
