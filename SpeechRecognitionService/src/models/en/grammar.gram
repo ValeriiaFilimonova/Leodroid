@@ -1,0 +1,5 @@
+#JSGF V1.0s
+
+grammar grammar;
+
+public <greeting> = good morning;
