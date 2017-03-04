@@ -2,17 +2,6 @@
 
 cd $(dirname $0)
 
-# RabbitMQ setup
-
-#sudo apt-get install rabbitmq-server1
-
-status="$(sudo rabbitmqctl status | grep 'running_applications')"
-
-if [ -z "$status" ]
-then
-    rabbitmq-server
-fi
-
 # Compiling jar
 
 LIB_PATH="../lib/"
