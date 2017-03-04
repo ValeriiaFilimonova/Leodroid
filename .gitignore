@@ -1,6 +1,6 @@
 .idea/
 MovingService/
-SpeechSynthesisService/
+SpeechSynthesisService/cmake-build-debug
 bin/
 lib/
 out/
