@@ -11,6 +11,7 @@ public class MessageBus {
     private final static String HOST = "localhost";
     private final static String ROUTING_KEY = "";
 
+    private Connection connection;
     private Channel channel;
 
     private Connection establishConnection() {
@@ -37,7 +38,7 @@ public class MessageBus {
     }
 
     public MessageBus() {
-        Connection connection = establishConnection();
+        connection = establishConnection();
         channel = createExchangeChannel(connection);
     }
 
@@ -47,6 +48,16 @@ public class MessageBus {
         }
         catch (IOException ex) {
             throw new RabbitException(RabbitException.Errors.SEND_MESSAGE_ERROR, ex);
+        }
+    }
+
+    public void closeConnection() {
+        try {
+            channel.close();
+            connection.close();
+        }
+        catch (TimeoutException | IOException ex) {
+            throw new RabbitException(RabbitException.Errors.CLOSE_CONNECTION_ERROR, ex);
         }
     }
 }

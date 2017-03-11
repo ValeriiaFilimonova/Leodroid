@@ -10,7 +10,8 @@ public class RabbitException extends RuntimeException {
     enum Errors {
         CONNECTION_ERROR("establishing connection"),
         CHANNEL_ERROR("creating channel"),
-        SEND_MESSAGE_ERROR("sending message");
+        SEND_MESSAGE_ERROR("sending message"),
+        CLOSE_CONNECTION_ERROR("clossing connection");
 
         private String message;
 

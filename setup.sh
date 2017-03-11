@@ -39,3 +39,8 @@ then
     sudo apt-get install -y espeak
 fi
 echo "eSpeak installed"
+
+# systemd services setup
+
+cp lib /usr/lib/droid-system
+cp service /usr/bin/droid-system
