@@ -4,29 +4,29 @@ cd $(dirname $0)
 
 # Node JS setup
 
-if [ "$(node -v)" == *"v4."* ]
+if [ -z "$(node -v | grep 'v4.')" ]
 then
-    sudo apt-get install -y nodejs
+    apt-get install -y nodejs
 fi
 echo "node-js installed"
 
 # NPM setup
 
-if [ "$(npm -v)" == *"4."* ]
+if [ -z "$(npm -v | grep '4.')" ]
 then
-    sudo apt-get install -y npm
+    apt-get install -y npm
 fi
 echo "npm installed"
 
 # RabbitMQ setup
 
-if [ -z "$(sudo apt-cache policy rabbitmq-server | grep 'Installed: 3.')" ]
+if [ -z "$(apt-cache policy rabbitmq-server | grep 'Installed: 3.')" ]
 then
-    sudo apt-get install -y rabbitmq-server
+    apt-get install -y rabbitmq-server
 fi
 echo "rabbitmq installed"
 
-if [ -z "$(sudo rabbitmqctl status | grep 'rabbit')" ]
+if [ -z "$(rabbitmqctl status | grep 'rabbit')" ]
 then
     rabbitmq-server
 fi
@@ -36,11 +36,19 @@ echo "rabbitmq daemon started"
 
 if [ -z "$(espeak --version | grep 'eSpeak text-to-speech')" ]
 then
-    sudo apt-get install -y espeak
+    apt-get install -y espeak
 fi
 echo "eSpeak installed"
 
+# Redis setup
+
+if [ -z "$(redis-cli -v | grep '3.')" ]
+then
+    apt-get install -y redis-server
+fi
+echo "redis installed"
+
 # systemd services setup
 
-cp lib /usr/lib/droid-system
-cp service /usr/bin/droid-system
+./copy.sh
+./systemd.sh

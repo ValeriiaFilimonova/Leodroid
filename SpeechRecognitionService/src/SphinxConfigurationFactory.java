@@ -3,8 +3,7 @@ import edu.cmu.sphinx.api.Configuration;
 public class SphinxConfigurationFactory {
     private static String LANGUAGE = "en";
 
-    private static String PATH = "file:/home/valera/Documents/IdeaProjects/" +
-                                 "DroidSystem/SpeechRecognitionService/src/models/" + LANGUAGE;
+    private static String PATH = "file:" + System.getenv("MODELS_PATH") + LANGUAGE;
     private static String ACOUSTIC_MODEL_PATH = PATH + "/acoustic";
     private static String DICTIONARY_PATH = PATH + "/dictionary.dict";
     private static String LANGUAGE_MODEL_PATH = PATH + "/language.lm";
