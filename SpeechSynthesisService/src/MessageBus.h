@@ -2,6 +2,7 @@
 #define TTS_MESSAGEBUS_H
 
 #include <Poco/Net/StreamSocket.h>
+#include <amqpcpp.h>
 
 class MessageBus {
 public:

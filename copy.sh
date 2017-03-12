@@ -1,11 +1,9 @@
 #!/bin/bash
 
 cd $(dirname $0)
+source env.opts
 
 # copy folders with dependencies and services
-
-export SERVICES_PATH="/usr/share/droid-system"
-export LIB_PATH="/usr/lib/droid-system"
 
 if [ -d "$LIB_PATH" ];
 then
