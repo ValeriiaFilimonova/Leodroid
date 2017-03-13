@@ -14,7 +14,7 @@ void onCancel(int signal) {
 }
 
 int main() {
-    signal(SIGTERM /*| SIGABRT |SIGKILL*/, onCancel);
+    signal(SIGTERM | SIGABRT | SIGKILL | SIGINT, onCancel);
 
     SpeechSynthesizer *synthesizer = new SpeechSynthesizer();
 
