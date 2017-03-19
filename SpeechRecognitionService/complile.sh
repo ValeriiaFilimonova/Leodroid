@@ -4,10 +4,16 @@ cd $(dirname $0)
 
 # Compiling jar
 
-
-LIB_PATH="../lib"
-LIBRARIES="${LIB_PATH}/amqp-client-4.0.2.jar:${LIB_PATH}/slf4j-api-1.7.21.jar"
 SERVICE_NAME="SpeechRecognitionService"
 
-javac -cp $LIBRARIES:$LIB_PATH/$SERVICE_NAME/* -d ../bin/$SERVICE_NAME src/*.java
-jar cvf ../service/$SERVICE_NAME.jar -C ../bin/$SERVICE_NAME/ .
+LIB_PATH="../lib"
+LIBRARIES="${LIB_PATH}/amqp-client-4.0.2.jar:${LIB_PATH}/slf4j-api-1.7.24.jar"
+BIN_PATH="../bin/$SERVICE_NAME"
+
+if [ ! -d "$BIN_PATH" ]
+then
+    mkdir $BIN_PATH
+fi
+
+javac -cp $LIBRARIES:$LIB_PATH/$SERVICE_NAME/* -d $BIN_PATH src/*.java
+jar cvf ../service/$SERVICE_NAME.jar -C $BIN_PATH/ .
