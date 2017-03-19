@@ -6,6 +6,10 @@ import java.io.IOException;
 
 public class TextSynthesisBus extends MessageBus {
     private final static String QUEUE_NAME = "text-synthesis";
+    private final AMQP.BasicProperties basicProperties = new AMQP.BasicProperties.Builder()
+            .deliveryMode(1)
+            .expiration("1000")
+            .build();
 
     @Override
     protected Channel createChannel(Connection connection) {
@@ -30,7 +34,7 @@ public class TextSynthesisBus extends MessageBus {
 
     public void sendText(String message) {
         try {
-            channel.basicPublish("", queue, null, message.getBytes());
+            channel.basicPublish("", queue, basicProperties, message.getBytes());
         }
         catch (IOException ex) {
             throw new RabbitException(RabbitException.Errors.SEND_MESSAGE_ERROR, ex);
