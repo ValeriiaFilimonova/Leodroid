@@ -8,4 +8,4 @@
 * [ ] Maintainance Service
 * [ ] Mobile Service
 
-![Services](Full diagram.png)
+![Services](https://github.com/ValeriiaFilimonova/Leodroid/blob/master/Full%20diagram.png)
