@@ -1,3 +1,5 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rabbitmq.MessageBusFactory;
 import rabbitmq.TextSynthesisBus;
 import rabbitmq.VoiceCommandBus;
@@ -5,19 +7,36 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 public class ManagingService implements SignalHandler {
+    private static Logger LOGGER;
+
+    static {
+        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
+        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "yyyy-MM-dd' 'HH:mm:ss");
+        System.setProperty("org.slf4j.simpleLogger.showThreadName", "false");
+
+        LOGGER = LoggerFactory.getLogger(ManagingService.class);
+    }
+
     private VoiceCommandBus commandBus = MessageBusFactory.getVoiceCommandBus();
     private TextSynthesisBus synthesisBus = MessageBusFactory.getTextSynthesisBus();
 
     private boolean tryToExecute(Command command, VoiceMessage message) {
         if (message.startsWith(command)) {
+            LOGGER.info("Incoming message: " + message.toString());
+            String answer;
+
             try {
                 String applicationName = message.extractName(command);
                 CommandExecutionResult result = command.execute(applicationName);
-                synthesisBus.sendText(result.getMessage());
+                answer = result.getMessage();
+
             }
             catch (VoiceMessage.ExtractingNameException ex) {
-                synthesisBus.sendText("Sorry, didn't recognize application name");
+                answer = "Sorry, didn't recognize application name";
             }
+
+            synthesisBus.sendText(answer);
+            LOGGER.info("Outcoming message: " + answer);
             return true;
         }
 
@@ -26,7 +45,6 @@ public class ManagingService implements SignalHandler {
 
     public void start() {
         commandBus.setConsumer((message) -> {
-            System.out.println(message);
             VoiceMessage voiceMessage = new VoiceMessage(message);
 
             if (tryToExecute(Command.START_APPLICATION, voiceMessage)) {

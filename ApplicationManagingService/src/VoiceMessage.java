@@ -21,6 +21,10 @@ public class VoiceMessage {
         }
     }
 
+    @Override public String toString() {
+        return message;
+    }
+
     public class ExtractingNameException extends RuntimeException {
         @Override public String getMessage() {
             return message;
