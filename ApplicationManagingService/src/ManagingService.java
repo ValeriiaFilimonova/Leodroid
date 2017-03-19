@@ -3,7 +3,6 @@ import rabbitmq.TextSynthesisBus;
 import rabbitmq.VoiceCommandBus;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
-import systemd.ServiceManager;
 
 public class ManagingService implements SignalHandler {
     private VoiceCommandBus commandBus = MessageBusFactory.getVoiceCommandBus();
@@ -13,23 +12,13 @@ public class ManagingService implements SignalHandler {
         if (message.startsWith(command)) {
             try {
                 String applicationName = message.extractName(command);
-                ServiceManager.Status status = command.execute(applicationName);
-
-                switch (status) {
-                    case SUCCESS:
-                        synthesisBus.sendText(command.getSuccessMessage(applicationName));
-                        break;
-                    case FAILURE:
-                        synthesisBus.sendText(command.getFailureMessage(applicationName));
-                        break;
-                }
+                CommandExecutionResult result = command.execute(applicationName);
+                synthesisBus.sendText(result.getMessage());
             }
             catch (VoiceMessage.ExtractingNameException ex) {
                 synthesisBus.sendText("Sorry, didn't recognize application name");
             }
-            finally {
-                return true;
-            }
+            return true;
         }
 
         return false;
@@ -37,6 +26,7 @@ public class ManagingService implements SignalHandler {
 
     public void start() {
         commandBus.setConsumer((message) -> {
+            System.out.println(message);
             VoiceMessage voiceMessage = new VoiceMessage(message);
 
             if (tryToExecute(Command.START_APPLICATION, voiceMessage)) {
