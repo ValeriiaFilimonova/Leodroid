@@ -14,7 +14,7 @@ const verbs = {
     DELETE: 'DELETE',
 };
 
-const errorStatuses = [400, 404];
+const errorStatuses = [400, 404, 500];
 const reqBodyMethods = [verbs.POST, verbs.PUT, verbs.PATCH];
 
 const loggerHandler = function (tokens, req, res) {
