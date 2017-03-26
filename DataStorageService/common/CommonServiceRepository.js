@@ -8,7 +8,35 @@ const redis = require('./../RedisClient');
 class CommonServiceRepository {
     constructor() {
         this._servicePrefix = "service.";
-        this._commandsPostfix = '.commands'
+        this._infoPostfix = '.info';
+        this._commandsPostfix = '.commands';
+    }
+
+    getAllServices() {
+        let services;
+        let infoPromises, commandsPromises;
+
+        return bluebird
+            .all([
+                redis.keysAsync(`${this._servicePrefix}*${this._infoPostfix}`),
+                redis.keysAsync(`${this._servicePrefix}*${this._commandsPostfix}`),
+            ])
+            .then((keys) => {
+                infoPromises = _.map(keys[0], (key) => redis.hgetallAsync(key));
+                commandsPromises = _.map(keys[1], (key) => redis.hgetallAsync(key));
+                return bluebird.all(infoPromises);
+            })
+            .then((mainInfo) => {
+                services = _.map(mainInfo, (service) => {
+                    return _.assign(service, { dependencies: this._getDependenciesArray(service.dependencies) })
+                });
+                return bluebird.all(commandsPromises);
+            })
+            .then((commandsInfo) => {
+                return _.map(commandsInfo, (commands, index) => {
+                    return _.assign(services[index], { commands });
+                });
+            });
     }
 
     getServiceByName(serviceName) {
@@ -16,7 +44,7 @@ class CommonServiceRepository {
 
         return bluebird
             .all([
-                redis.hgetallAsync(key),
+                redis.hgetallAsync(key + this._infoPostfix),
                 redis.hgetallAsync(key + this._commandsPostfix),
             ])
             .then((result) => {
@@ -34,8 +62,7 @@ class CommonServiceRepository {
                     })
                     .omitBy(_.isUndefined)
                     .value();
-            })
-            .then((serviceModel) => this._appendServiceName(serviceName, serviceModel));
+            });
     }
 
     addOrUpdateService(serviceName, serviceModel) {
@@ -44,30 +71,26 @@ class CommonServiceRepository {
         const dependencies = this._validateDependencies(serviceModel.dependencies);
         const commands = this._validateCommands(serviceModel.commands);
 
-        const service = _(serviceModel)
+        const service = _({ serviceName })
+            .defaults(serviceModel)
             .assign({ dependencies, commands })
             .omitBy(_.isUndefined)
-            .omit('commands')
             .value();
 
         return bluebird
             .all([
-                redis.hmset(key, service),
-                redis.hmset(key + this._commandsPostfix, serviceModel.commands),
+                redis.hmsetAsync(key + this._infoPostfix, _.omit(service, 'commands')),
+                redis.hmsetAsync(key + this._commandsPostfix, serviceModel.commands),
             ])
-            .then(() => this._appendServiceName(serviceName, serviceModel));
+            .then(() => service);
     }
 
     removeService(serviceName) {
         const key = this._getCommonKey(serviceName);
 
         return bluebird.all([
-            redis.del(key, key + this._commandsPostfix),
+            redis.del(key + this._infoPostfix, key + this._commandsPostfix),
         ]);
-    }
-
-    _appendServiceName(serviceName, response) {
-        return _.defaults({ serviceName }, response);
     }
 
     _getCommonKey(serviceName) {
