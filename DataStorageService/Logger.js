@@ -19,7 +19,7 @@ const loggerHandler = function (tokens, req, res) {
         return head;
     }
     if (method === 'GET') {
-        return head + '. Response body:\n' + tokens.res_body(req);
+        return head + '. Response body:\n' + tokens.res_body(req, res);
     }
     if (_.includes(['POST', 'PUT', 'PATCH'], method)) {
         return head + '. Request body:\n' + tokens.req_body(req);

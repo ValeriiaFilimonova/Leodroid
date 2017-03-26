@@ -8,15 +8,22 @@ const CommonServiceRepository = require('./CommonServiceRepository');
 
 class CommonServiceController {
     constructor(repository) {
-        this._requiredProperties = ['serviceName', 'applicationName', 'commands'];
+        this._requiredProperties = ['applicationName', 'commands'];
         this._repository = repository;
         this._router = router();
 
-        this._router.put('/', this.addNewService.bind(this));
+        this._router.get('/:serviceName', this.getService.bind(this));
+        this._router.put('/:serviceName', this.upsertService.bind(this));
+        this._router.delete('/:serviceName', this.removeService.bind(this));
     }
 
     router() {
         return this._router;
+    }
+
+    _respond(resObject, response) {
+        resObject.body = response;
+        resObject.send(response);
     }
 
     _guard(propertyName, propertyValue) {
@@ -33,7 +40,13 @@ class CommonServiceController {
         return requestBody;
     }
 
-    addNewService(req, res) {
+    getService(req, res) {
+        return this._repository
+            .getServiceByName(req.params.serviceName)
+            .then((info) => this._respond(res, info));
+    }
+
+    upsertService(req, res) {
         const body = this.guard(req.body);
         const serviceModel = {
             applicationName: body.applicationName,
@@ -44,13 +57,14 @@ class CommonServiceController {
         };
 
         return this._repository
-            .addNewService(body.serviceName, serviceModel)
-            .then(() => {
-                return res.status(200).send(serviceModel);
-            })
-            .catch((err) => {
-                return res.status(500).send(err)
-            });
+            .addOrUpdateService(req.params.serviceName, serviceModel)
+            .then((service) => res.send(service));
+    }
+
+    removeService(req, res) {
+        return this._repository
+            .removeService(req.params.serviceName)
+            .then(() => res.status(204).send());
     }
 }
 
