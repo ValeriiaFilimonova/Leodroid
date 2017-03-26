@@ -3,40 +3,20 @@
 const _ = require('lodash');
 const bluebird = require('bluebird');
 const errors = require('./../Errors');
-const redis = require('./../RedisClient');
 
-class CommonServiceRepository {
+const BaseRepository = require('../base/BaseRepository');
+
+class CommonServiceRepository extends BaseRepository {
     constructor() {
-        this._servicePrefix = "service.";
+        super();
         this._infoPostfix = '.info';
         this._commandsPostfix = '.commands';
     }
 
     getAllServices() {
-        let services;
-        let infoPromises, commandsPromises;
-
-        return bluebird
-            .all([
-                redis.keysAsync(`${this._servicePrefix}*${this._infoPostfix}`),
-                redis.keysAsync(`${this._servicePrefix}*${this._commandsPostfix}`),
-            ])
-            .then((keys) => {
-                infoPromises = _.map(keys[0], (key) => redis.hgetallAsync(key));
-                commandsPromises = _.map(keys[1], (key) => redis.hgetallAsync(key));
-                return bluebird.all(infoPromises);
-            })
-            .then((mainInfo) => {
-                services = _.map(mainInfo, (service) => {
-                    return _.assign(service, { dependencies: this._getDependenciesArray(service.dependencies) })
-                });
-                return bluebird.all(commandsPromises);
-            })
-            .then((commandsInfo) => {
-                return _.map(commandsInfo, (commands, index) => {
-                    return _.assign(services[index], { commands });
-                });
-            });
+        return super.getAllServices().then((services) => {
+            return bluebird.map(services, (serviceName) => this.getServiceByName(serviceName));
+        });
     }
 
     getServiceByName(serviceName) {
@@ -44,8 +24,8 @@ class CommonServiceRepository {
 
         return bluebird
             .all([
-                redis.hgetallAsync(key + this._infoPostfix),
-                redis.hgetallAsync(key + this._commandsPostfix),
+                this._redis.hgetallAsync(key + this._infoPostfix),
+                this._redis.hgetallAsync(key + this._commandsPostfix),
             ])
             .then((result) => {
                 const info = result[0];
@@ -77,20 +57,20 @@ class CommonServiceRepository {
             .omitBy(_.isUndefined)
             .value();
 
-        return bluebird
+        return super.addService(serviceName).then(() => bluebird
             .all([
-                redis.hmsetAsync(key + this._infoPostfix, _.omit(service, 'commands')),
-                redis.hmsetAsync(key + this._commandsPostfix, serviceModel.commands),
+                this._redis.hmsetAsync(key + this._infoPostfix, _.omit(service, 'commands')),
+                this._redis.hmsetAsync(key + this._commandsPostfix, _.get(serviceModel, 'commands')),
             ])
-            .then(() => service);
+            .then(() => service));
     }
 
     removeService(serviceName) {
         const key = this._getCommonKey(serviceName);
 
-        return bluebird.all([
-            redis.del(key + this._infoPostfix, key + this._commandsPostfix),
-        ]);
+        return super.removeService(serviceName)
+            .then(() => this._redis.delAsync(key + this._infoPostfix, key + this._commandsPostfix))
+            .then((response) => !!response);
     }
 
     _getCommonKey(serviceName) {
@@ -112,11 +92,8 @@ class CommonServiceRepository {
     }
 
     _validateCommands(commands) {
-        if (!commands) {
-            return;
-        }
-        if (!_.isObject(commands)) {
-            throw new errors.ValidationError('Commands must be an object');
+        if (!_.isObject(commands) || _.isEmpty(commands)) {
+            throw new errors.ValidationError('Commands must be non-empty object');
         }
 
         _(commands).forOwn((value, key) => {
