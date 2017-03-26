@@ -43,10 +43,7 @@ class CommonServiceController extends BaseController {
     removeService(req, res) {
         return this._repository
             .removeService(req.params.serviceName)
-            .then((removed) => {
-                const status = removed ? 204 : 404;
-                res.status(status).send();
-            });
+            .then(() => res.status(204).send());
     }
 }
 

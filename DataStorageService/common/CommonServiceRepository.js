@@ -20,7 +20,7 @@ class CommonServiceRepository extends BaseRepository {
     }
 
     getServiceByName(serviceName) {
-        const key = this._getCommonKey(serviceName);
+        const key = this._getServiceKey(serviceName);
 
         return bluebird
             .all([
@@ -32,7 +32,7 @@ class CommonServiceRepository extends BaseRepository {
                 const commands = result[1];
 
                 if (_.isNull(info)) {
-                    throw new errors.NotFoundError(`Service '${serviceName}' doesn't exist`);
+                    throw new errors.NotFoundError(serviceName);
                 }
 
                 return _(info)
@@ -46,7 +46,7 @@ class CommonServiceRepository extends BaseRepository {
     }
 
     addOrUpdateService(serviceName, serviceModel) {
-        const key = this._getCommonKey(serviceName);
+        const key = this._getServiceKey(serviceName);
 
         const dependencies = this._validateDependencies(serviceModel.dependencies);
         const commands = this._validateCommands(serviceModel.commands);
@@ -61,19 +61,32 @@ class CommonServiceRepository extends BaseRepository {
             .all([
                 this._redis.hmsetAsync(key + this._infoPostfix, _.omit(service, 'commands')),
                 this._redis.hmsetAsync(key + this._commandsPostfix, _.get(serviceModel, 'commands')),
+                this._redis.setAsync(this._getApplicationKey(serviceModel.applicationName), serviceName),
             ])
             .then(() => service));
     }
 
     removeService(serviceName) {
-        const key = this._getCommonKey(serviceName);
+        const key = this._getServiceKey(serviceName);
+        let serviceModel;
 
-        return super.removeService(serviceName)
-            .then(() => this._redis.delAsync(key + this._infoPostfix, key + this._commandsPostfix))
-            .then((response) => !!response);
+        return this._redis.hgetallAsync(key + this._infoPostfix)
+            .then((serviceInfo) => {
+                if (!serviceInfo) {
+                    throw new errors.NotFoundError(serviceName);
+                }
+
+                serviceModel = serviceInfo;
+                return super.removeService(serviceName);
+            })
+            .then(() => this._redis.delAsync(
+                key + this._infoPostfix,
+                key + this._commandsPostfix,
+                this._getApplicationKey(serviceModel.applicationName)
+            ));
     }
 
-    _getCommonKey(serviceName) {
+    _getServiceKey(serviceName) {
         if (!/^[a-zA-Z0-9-_]*$/.test(serviceName)) {
             throw new errors.ValidationError('Service name shouldn\'t contain any special symbols including spaces');
         }

@@ -70,7 +70,7 @@ class ServiceStatusRepository extends BaseRepository {
                     throw new errors.ValidationError(`Status must be one of the ${this._statuses}`)
                 }
                 if (!_.includes(serviceNames, key)) {
-                    throw new errors.NotFoundError(`${key} service doesn't exist`);
+                    throw new errors.NotFoundError(key);
                 }
             });
         });

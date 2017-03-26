@@ -7,8 +7,8 @@ class ValidationError extends Error {
 }
 
 class NotFoundError extends Error {
-    constructor(message) {
-        super(message);
+    constructor(serviceName) {
+        super(`${serviceName} service doesn't exist`);
     }
 }
 

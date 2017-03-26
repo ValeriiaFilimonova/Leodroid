@@ -7,14 +7,16 @@ const errorHandler = require('./ErrorHandler');
 
 const CommonServiceController = require('./common/CommonServiceController');
 const ServiceStatusController = require('./status/ServiceStatusController');
+const ApplicationInfoController = require('./app/ApplicationInfoController');
 
 const app = express();
 
 app.use(parser);
 app.use(logger);
 
-app.use('/storage/services/_status', ServiceStatusController.router());
 app.use('/storage/services', CommonServiceController.router());
+app.use('/storage/statuses', ServiceStatusController.router());
+app.use('/storage/applications', ApplicationInfoController.router());
 
 app.use(errorHandler);
 

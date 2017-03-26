@@ -1,6 +1,6 @@
 'use strict';
 
-const redis = require('./../RedisClient');
+const redis = require('./RedisClient');
 
 class BaseRepository {
     constructor() {
@@ -20,6 +20,10 @@ class BaseRepository {
 
     removeService(serviceName) {
         return this._redis.sremAsync(this._allServicesKey, serviceName);
+    }
+
+    _getApplicationKey(appName) {
+        return `app.${appName}.service`;
     }
 }
 
