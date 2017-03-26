@@ -1,5 +1,5 @@
-#ifndef TTS_MESSAGEBUS_H
-#define TTS_MESSAGEBUS_H
+#ifndef SPEECHSYNTHESISSERVICE_MESSAGEBUS_H
+#define SPEECHSYNTHESISSERVICE_MESSAGEBUS_H
 
 #include <Poco/Net/StreamSocket.h>
 #include <amqpcpp.h>
@@ -16,4 +16,4 @@ private:
 };
 
 
-#endif //TTS_MESSAGEBUS_H
+#endif //SPEECHSYNTHESISSERVICE_MESSAGEBUS_H

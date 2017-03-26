@@ -4,7 +4,7 @@ project(SpeechSynthesisService)
 set(CMAKE_CXX_STANDARD 11)
 
 file(GLOB SRC "src/*.cpp")
-set(SOURCE_FILES main.cpp espeak.h ${SRC})
+set(SOURCE_FILES SynthesisService.cpp espeak.h ${SRC})
 add_executable(SpeechSynthesisService ${SOURCE_FILES})
 
 include_directories(/usr/lib/x86_64-linux-gnu)
