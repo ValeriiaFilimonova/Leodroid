@@ -1,9 +1,8 @@
 {
   "name": "data-storage-service",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node src/DataService.js"
   },
   "dependencies": {
     "bluebird": "3.5.0",

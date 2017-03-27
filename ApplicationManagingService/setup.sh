@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 # Allows to run systemctl without password
 

@@ -5,8 +5,14 @@ cd $(dirname $0)
 # Compiling executable
 
 SERVICE_NAME="SpeechSynthesisService"
+BIN_PATH="../bin/$SERVICE_NAME"
 
-cd ../bin/$SERVICE_NAME
+if [ ! -d "$BIN_PATH" ]
+then
+    mkdir $BIN_PATH
+fi
+
+cd $BIN_PATH
 
 cmake ../../$SERVICE_NAME
 make
