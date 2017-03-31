@@ -57,8 +57,7 @@ Requires=redis.service
 [Service]
 Type=simple
 Restart=always
-Environment=\"NODE_PATH=/usr/local/lib/node_modules\"
-ExecStart=/usr/bin/node ${SERVICES_PATH}/${DATA_STORAGE_NAME}/DataService.js
+ExecStart=${SERVICES_PATH}/${DATA_STORAGE_NAME}
 
 [Install]
 WantedBy=multi-user.target"
