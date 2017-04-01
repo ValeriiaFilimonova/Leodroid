@@ -9,7 +9,7 @@ class ApplicationInfoRepository extends BaseRepository {
         return this._redis.getAsync(this._getApplicationKey(appName))
             .then((name) => {
                 if (!name) {
-                    throw new errors.NotFoundError(name);
+                    throw new errors.NotFoundError(appName);
                 }
                 return name;
             });

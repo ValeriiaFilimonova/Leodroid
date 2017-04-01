@@ -1,17 +1,17 @@
 import systemctl.ServiceManager;
 
-public class CommandExecutionResult {
+class CommandExecutionResult {
     private String message;
 
     private CommandExecutionResult(String message) {
         this.message = message;
     }
 
-    public String getMessage() {
+    String getMessage() {
         return message;
     }
 
-    public static CommandExecutionResult from(ServiceManager.Status serviceStatus, String applicationName) {
+    static CommandExecutionResult from(ServiceManager.Status serviceStatus, String applicationName) {
         switch (serviceStatus) {
             case NOT_FOUND:
                 return new CommandExecutionResult(String.format("%s not installed", applicationName));

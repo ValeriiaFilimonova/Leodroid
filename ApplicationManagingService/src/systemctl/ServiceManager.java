@@ -1,62 +1,110 @@
 package systemctl;
 
-import java.util.Arrays;
+import logger.ManagingServiceLogger;
+import storage.ApplicationNotFoundException;
+import storage.DataStorageClient;
+import storage.DataStorageClientException;
 
 public class ServiceManager {
     public enum Status {
-        NOT_FOUND,
-        FAILED_TO_START, FAILED_TO_STOP,
-        ALREADY_STARTED, NOT_RUNNING,
-        SUCCESSFULLY_STARTED, SUCCESSFULLY_STOPPED
+        NOT_FOUND, ALREADY_STARTED, NOT_RUNNING,
+        FAILED_TO_START("failed"), FAILED_TO_STOP("failed"),
+        SUCCESSFULLY_STARTED("running"), SUCCESSFULLY_STOPPED("stopped");
+
+        private String statusString;
+
+        Status() {}
+
+        Status(String statusString) {
+            this.statusString = statusString;
+        }
+
+
+        @Override public String toString() {
+            return statusString;
+        }
     }
 
-    private static String getServiceName(String appName) {
-        // TODO get service name from data storage to prevent unexpected running and stopping of built-in services
-        return Arrays.stream(appName.split(" "))
-                .reduce((result, current) -> String.format("%s-%s", result, current.toLowerCase()))
-                .orElse(appName);
+    private static ServiceManager managerInstance;
+
+    public static ServiceManager getInstance() {
+        if (managerInstance == null) {
+            managerInstance = new ServiceManager();
+        }
+        return managerInstance;
     }
 
-    public static Status startService(String name) {
+    private DataStorageClient dataStorageClient;
+    private ManagingServiceLogger logger = ManagingServiceLogger.getInstance(ServiceManager.class);
+
+    private ServiceManager() {
+        dataStorageClient = new DataStorageClient();
+    }
+
+    private String getServiceName(String appName) {
+        return dataStorageClient.getServiceName(appName);
+    }
+
+    private Status updateServiceStatus(String serviceName, Status status) {
+        dataStorageClient.updateServiceStatus(serviceName, status.toString());
+        return status;
+    }
+
+    public Status startService(String name) {
         try {
             String serviceName = getServiceName(name);
-            Service service = new Service(serviceName);
 
-            if (service.isActive()) {
-                return Status.ALREADY_STARTED;
+            try {
+                Service service = new Service(serviceName);
+
+                if (service.isActive()) {
+                    return Status.ALREADY_STARTED;
+                }
+
+                service.start();
+                return updateServiceStatus(serviceName, Status.SUCCESSFULLY_STARTED);
             }
-
-            service.start();
-            // TODO update service state through data storage
-            return Status.SUCCESSFULLY_STARTED;
+            catch (ServiceNotFoundException ex) {
+                logger.logRuntimeException(ex);
+                return Status.NOT_FOUND;
+            }
+            catch (SystemctlException | DataStorageClientException ex) {
+                logger.logRuntimeException(ex);
+                return updateServiceStatus(serviceName, Status.FAILED_TO_START);
+            }
         }
-        catch (ServiceNotFoundException ex) {
+        catch (ApplicationNotFoundException ex) {
+            logger.logRuntimeException(ex);
             return Status.NOT_FOUND;
-        }
-        // TODO send logs on failures at least
-        catch (SystemctlException ex) {
-            return Status.FAILED_TO_START;
         }
     }
 
-    public static Status stopService(String name) {
+    public Status stopService(String name) {
         try {
             String serviceName = getServiceName(name);
-            Service service = new Service(serviceName);
 
-            if (!service.isActive()) {
-                return Status.NOT_RUNNING;
+            try {
+                Service service = new Service(serviceName);
+
+                if (!service.isActive()) {
+                    return Status.NOT_RUNNING;
+                }
+
+                service.stop();
+                return updateServiceStatus(serviceName, Status.SUCCESSFULLY_STOPPED);
             }
-
-            service.stop();
-            return Status.SUCCESSFULLY_STOPPED;
+            catch (ServiceNotFoundException ex) {
+                logger.logRuntimeException(ex);
+                return Status.NOT_FOUND;
+            }
+            catch (SystemctlException | DataStorageClientException ex) {
+                logger.logRuntimeException(ex);
+                return updateServiceStatus(serviceName, Status.FAILED_TO_STOP);
+            }
         }
-        catch (ServiceNotFoundException ex) {
+        catch (ApplicationNotFoundException ex) {
+            logger.logRuntimeException(ex);
             return Status.NOT_FOUND;
         }
-        catch (SystemctlException ex) {
-            return Status.FAILED_TO_STOP;
-        }
     }
-
 }

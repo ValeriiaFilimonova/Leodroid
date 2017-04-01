@@ -1,5 +1,4 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import logger.ManagingServiceLogger;
 import rabbitmq.MessageBusFactory;
 import rabbitmq.TextSynthesisBus;
 import rabbitmq.VoiceCommandBus;
@@ -7,22 +6,14 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 public class ManagingService implements SignalHandler {
-    private static Logger LOGGER;
-
-    static {
-        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
-        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "yyyy-MM-dd' 'HH:mm:ss");
-        System.setProperty("org.slf4j.simpleLogger.showThreadName", "false");
-
-        LOGGER = LoggerFactory.getLogger(ManagingService.class);
-    }
+    private ManagingServiceLogger logger = ManagingServiceLogger.getInstance(ManagingService.class);
 
     private VoiceCommandBus commandBus = MessageBusFactory.getVoiceCommandBus();
     private TextSynthesisBus synthesisBus = MessageBusFactory.getTextSynthesisBus();
 
     private boolean tryToExecute(Command command, VoiceMessage message) {
         if (message.startsWith(command)) {
-            LOGGER.info("Incoming message: " + message.toString());
+            logger.logIncomingMessage(message.toString());
             String answer;
 
             try {
@@ -34,16 +25,20 @@ public class ManagingService implements SignalHandler {
             catch (VoiceMessage.ExtractingNameException ex) {
                 answer = "Sorry, didn't recognize application name";
             }
+            catch (Exception ex) {
+                answer = "Sorry, something went wrong";
+                logger.logRuntimeException(ex);
+            }
 
             synthesisBus.sendText(answer);
-            LOGGER.info("Outcoming message: " + answer);
+            logger.logOutcomingMessage(answer);
             return true;
         }
 
         return false;
     }
 
-    public void start() {
+    void start() {
         commandBus.setConsumer((message) -> {
             VoiceMessage voiceMessage = new VoiceMessage(message);
 

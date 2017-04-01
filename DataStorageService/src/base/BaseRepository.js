@@ -23,7 +23,7 @@ class BaseRepository {
     }
 
     _getApplicationKey(appName) {
-        return `app.${appName}.service`;
+        return `app.${appName.toLowerCase()}.service`;
     }
 }
 
