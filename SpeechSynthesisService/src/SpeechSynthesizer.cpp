@@ -1,6 +1,11 @@
 #include <cstring>
+
 #include "../espeak.h"
+
 #include "SpeechSynthesizer.h"
+#include "Logger.h"
+
+static Logger logger = Logger::getInstance();
 
 SpeechSynthesizer::SpeechSynthesizer() {
     espeak_Initialize(AUDIO_OUTPUT_PLAYBACK, 0, NULL, 0);
@@ -13,6 +18,8 @@ void SpeechSynthesizer::speak(std::string text) {
 
     espeak_Synchronize();
     espeak_Synth(text.c_str(), size_c, 0, POS_WORD, 0, espeakENDPAUSE, NULL, NULL);
+
+    logger.info("Text received: " + text);
 }
 
 void SpeechSynthesizer::setVoice(std::string name) {
