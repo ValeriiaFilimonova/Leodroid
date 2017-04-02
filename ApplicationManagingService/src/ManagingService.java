@@ -13,7 +13,7 @@ public class ManagingService implements SignalHandler {
 
     private boolean tryToExecute(Command command, VoiceMessage message) {
         if (message.startsWith(command)) {
-            logger.logIncomingMessage(message.toString());
+            logger.logMessage("Incoming message: " + message.toString());
             String answer;
 
             try {
@@ -31,7 +31,7 @@ public class ManagingService implements SignalHandler {
             }
 
             synthesisBus.sendText(answer);
-            logger.logOutcomingMessage(answer);
+            logger.logMessage("Oucoming message: " + answer);
             return true;
         }
 
@@ -39,6 +39,7 @@ public class ManagingService implements SignalHandler {
     }
 
     void start() {
+        logger.logMessage("Service started");
         commandBus.setConsumer((message) -> {
             VoiceMessage voiceMessage = new VoiceMessage(message);
 
@@ -54,6 +55,7 @@ public class ManagingService implements SignalHandler {
     @Override public void handle(Signal signal) {
         commandBus.closeConnection();
         synthesisBus.closeConnection();
+        logger.logMessage("Service stopped");
     }
 
     public static void main(String... args) throws Exception {

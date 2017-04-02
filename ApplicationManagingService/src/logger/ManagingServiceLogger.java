@@ -25,12 +25,8 @@ public class ManagingServiceLogger {
         logger = LoggerFactory.getLogger(clazz);
     }
 
-    public void logIncomingMessage(String message) {
-        logger.info("Incoming message: " + message);
-    }
-
-    public void logOutcomingMessage(String message) {
-        logger.info("Oucoming message: " + message);
+    public void logMessage(String message) {
+        logger.info(message);
     }
 
     public void logRuntimeException(Exception ex) {

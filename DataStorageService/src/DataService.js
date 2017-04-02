@@ -1,5 +1,7 @@
 'use strict';
 
+delete process.env["DEBUG_FD"];
+
 const express = require('express');
 const parser = require('body-parser').json();
 const logger = require('./Logger');

@@ -1,17 +1,17 @@
 public class RabbitException extends RuntimeException {
-    public RabbitException(Errors error, Throwable reason) {
+    RabbitException(Errors error, Throwable reason) {
         super(error.getMessage(), reason);
     }
 
     @Override public String getMessage() {
-        return String.format("%s: %s", this.getMessage(), this.getCause().getMessage());
+        return String.format("%s: %s", super.getMessage(), this.getCause().getMessage());
     }
 
     enum Errors {
         CONNECTION_ERROR("establishing connection"),
         CHANNEL_ERROR("creating channel"),
         SEND_MESSAGE_ERROR("sending message"),
-        CLOSE_CONNECTION_ERROR("clossing connection");
+        CLOSE_CONNECTION_ERROR("closing connection");
 
         private String message;
 

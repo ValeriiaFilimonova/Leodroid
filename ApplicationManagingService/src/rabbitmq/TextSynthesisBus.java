@@ -1,6 +1,8 @@
 package rabbitmq;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 
 import java.io.IOException;
 
@@ -8,7 +10,6 @@ public class TextSynthesisBus extends MessageBus {
     private final static String QUEUE_NAME = "text-synthesis";
     private final AMQP.BasicProperties basicProperties = new AMQP.BasicProperties.Builder()
             .deliveryMode(1)
-            .expiration("1000")
             .build();
 
     @Override
@@ -23,13 +24,7 @@ public class TextSynthesisBus extends MessageBus {
 
     @Override
     protected String createQueue(Channel channel) {
-        try {
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            return QUEUE_NAME;
-        }
-        catch (IOException ex) {
-            throw new RabbitException(RabbitException.Errors.QUEUE_ERROR, ex);
-        }
+        return QUEUE_NAME;
     }
 
     public void sendText(String message) {

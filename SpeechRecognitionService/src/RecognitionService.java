@@ -1,12 +1,22 @@
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 import java.io.IOException;
 
 public class RecognitionService {
+    static {
+        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
+        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "HH:mm:ss.SSS");
+        System.setProperty("org.slf4j.simpleLogger.showThreadName", "false");
+    }
+
+    private static Logger logger = LoggerFactory.getLogger(RecognitionService.class);
+
     private static class TerminationSignalHandler implements SignalHandler {
         private LiveSpeechRecognizer recognizer;
         private MessageBus bus;
@@ -27,8 +37,10 @@ public class RecognitionService {
                 }
             }
             catch (IllegalStateException ex) {
+                logger.error("Service error", ex);
             }
             finally {
+                logger.info("Service stopped");
                 System.exit(0);
             }
         }
@@ -55,9 +67,11 @@ public class RecognitionService {
                 SpeechResult result = recognizer.getResult();
                 String message = result.getHypothesis();
                 messageBus.sendMessage(message);
+                logger.info("Outcoming message: " + message);
             }
         }
         catch (IOException ex) {
+            logger.error("Service error", ex);
             throw new SphinxException(ex);
         }
     }
