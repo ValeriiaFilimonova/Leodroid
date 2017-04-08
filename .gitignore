@@ -1,8 +1,16 @@
 .idea/
 MovingService/
+MaintenanceService/
 SpeechSynthesisService/cmake-build-debug
+DataStorageService/node_modules
+DataStorageService/tmp
 bin/
 lib/
 out/
+service/
 
 *.iml
+
+# Temporarily
+/SpeechRecognitionService/src/models/ru/
+/SpeechRecognitionService/src/models/sphinx.config.xml

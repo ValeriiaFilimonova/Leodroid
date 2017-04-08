@@ -14,7 +14,6 @@ SPEECH_RECOGNITION_UNIT_FILE="
 [Unit]
 Description=Java Sphinx Speech Recognition Service
 Requires=rabbitmq-server.service
-StopWhenUnneeded=true
 
 [Service]
 Type=simple
@@ -34,7 +33,6 @@ SPEECH_SYNTHESIS_UNIT_FILE="
 [Unit]
 Description=C++ Espeak Based Speech Synthesis Service
 Requires=rabbitmq-server.service
-StopWhenUnneeded=true
 
 [Service]
 Type=simple
@@ -53,7 +51,6 @@ DATA_STORAGE_UNIT_FILE="
 [Unit]
 Description=NodeJS Redis Based Data Storage Service
 Requires=redis-server.service
-StopWhenUnneeded=true
 
 [Service]
 Type=simple
@@ -72,7 +69,6 @@ APPLICATION_MANAGING_UNIT_FILE="
 [Unit]
 Description=Java Systemctl Based Managing Service
 Requires=${SPEECH_RECOGNITION_SERVICE_NAME} ${SPEECH_SYNTHESIS_SERVICE_NAME} ${DATA_STORAGE_SERVICE_NAME}
-StopWhenUnneeded=true
 
 [Service]
 Type=simple
