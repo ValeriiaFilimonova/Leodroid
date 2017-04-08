@@ -6,7 +6,10 @@ MessageBus::MessageBus(AMQP::ConnectionHandler *handler, std::string queueName) 
     AMQP::Connection *connection = new AMQP::Connection(handler, credentials);
 
     MessageBus::channel = new AMQP::Channel(connection);
-    MessageBus::channel->declareQueue(queueName);
+
+    AMQP::Table arguments; arguments["x-message-ttl"] = 1000;
+
+    MessageBus::channel->declareQueue(queueName, AMQP::durable + AMQP::autodelete, arguments);
 }
 
 void MessageBus::setConsumer(AMQP::MessageCallback callback) {

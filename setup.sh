@@ -2,22 +2,6 @@
 
 cd $(dirname $0)
 
-# Node JS setup
-
-if [ -z "$(node -v | grep 'v4.')" ]
-then
-    apt-get install -y nodejs
-fi
-echo "node-js installed"
-
-# NPM setup
-
-if [ -z "$(npm -v | grep '4.')" ]
-then
-    apt-get install -y npm
-fi
-echo "npm installed"
-
 # RabbitMQ setup
 
 if [ -z "$(apt-cache policy rabbitmq-server | grep 'Installed: 3.')" ]

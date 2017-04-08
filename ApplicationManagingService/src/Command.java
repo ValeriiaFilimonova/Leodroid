@@ -3,8 +3,8 @@ import systemctl.ServiceManager;
 import java.util.function.Function;
 
 public enum Command {
-    START_APPLICATION("open the app", ServiceManager::startService),
-    STOP_APPLICATION("close the app", ServiceManager::stopService);
+    START_APPLICATION("open the app", ServiceManager.getInstance()::startService),
+    STOP_APPLICATION("close the app", ServiceManager.getInstance()::stopService);
 
     private String stringValue;
     private Function<String, ServiceManager.Status> instruction;

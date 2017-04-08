@@ -288,7 +288,7 @@ ESPEAK_API espeak_ERROR espeak_Synth(const void *text,
       wide characters (wchar_t), or UTF8 encoding.  Which of these is determined by the "flags"
       parameter.
 
-   size: Equal to (or greatrer than) the size of the text data, in bytes.  This is used in order
+   size: Equal to (or greater than) the size of the text data, in bytes.  This is used in order
       to allocate internal storage space for the text.  This value is not used for
       AUDIO_OUTPUT_SYNCHRONOUS mode.
 

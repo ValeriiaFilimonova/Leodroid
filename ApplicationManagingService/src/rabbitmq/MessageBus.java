@@ -38,8 +38,12 @@ public abstract class MessageBus {
 
     public void closeConnection() {
         try {
-            channel.close();
-            connection.close();
+            if (channel.isOpen()) {
+                channel.close();
+            }
+            if (connection.isOpen()) {
+                connection.close();
+            }
         }
         catch (TimeoutException | IOException ex) {
             throw new RabbitException(RabbitException.Errors.CLOSE_CONNECTION_ERROR, ex);

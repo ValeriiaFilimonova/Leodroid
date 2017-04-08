@@ -15,5 +15,5 @@ then
     mkdir $BIN_PATH
 fi
 
-javac -cp $LIBRARIES -d $BIN_PATH src/*/*java src/*.java
+javac -cp $LIBRARIES:$LIB_PATH/$SERVICE_NAME/* -d $BIN_PATH src/*/*.java src/*.java
 jar cvf ../service/$SERVICE_NAME.jar -C $BIN_PATH/ .
