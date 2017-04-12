@@ -13,6 +13,9 @@ class SystemctlExecutor {
         if ("enabled".equals(result)) {
             return true;
         }
+        if ("static".equals(result)) {
+            return true;
+        }
         if ("disabled".equals(result)) {
             return false;
         }
