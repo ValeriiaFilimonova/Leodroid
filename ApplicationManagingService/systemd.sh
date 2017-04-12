@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cd $(dirname $0)
+source ../env.opts
+
+APPLICATION_MANAGING_UNIT_FILE="
+[Unit]
+Description=Java Systemctl Based Managing Service
+Requires=${SPEECH_RECOGNITION_SERVICE_NAME} ${SPEECH_SYNTHESIS_SERVICE_NAME} ${DATA_STORAGE_SERVICE_NAME}
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/java -cp ${DEPENDENCIES_PATH}/*:${DEPENDENCIES_PATH}/${APPLICATION_MANAGING_NAME}/*:${SERVICES_PATH}/${APPLICATION_MANAGING_NAME}.jar ManagingService
+"
+
+echo -e "$APPLICATION_MANAGING_UNIT_FILE" > $UNITS_PATH/$APPLICATION_MANAGING_SERVICE_NAME
+echo "$APPLICATION_MANAGING_SERVICE_NAME -> done"

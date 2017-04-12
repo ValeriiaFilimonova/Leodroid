@@ -1,11 +1,8 @@
 #!/bin/bash
 
 cd $(dirname $0)
-
-SERVICE_NAME="DataStorageService"
-SERVICE_PATH="../service/"
+source ../env.opts
 
 #npm install nexe -g
 
-nexe -i ./src/DataService.js -o ./$SERVICE_PATH/$SERVICE_NAME
-
+nexe -i ./src/DataService.js -o ./$EXE_PATH/$DATA_STORAGE_NAME
