@@ -12,7 +12,11 @@ class BaseController {
         this._router = router();
     }
 
-    router() {
+    get repository() {
+        return this._repository;
+    }
+
+    get router() {
         return this._router;
     }
 
