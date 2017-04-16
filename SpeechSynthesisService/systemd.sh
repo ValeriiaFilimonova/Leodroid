@@ -7,11 +7,16 @@ SPEECH_SYNTHESIS_UNIT_FILE="
 [Unit]
 Description=C++ Espeak Based Speech Synthesis Service
 Requires=rabbitmq-server.service
+After=${DATA_STORAGE_SERVICE_NAME}
+OnFailure=${FAILURE_MONITORING_SERVICE_NAME}
 
 [Service]
 Type=simple
 Restart=always
+RestartSec=5
 ExecStart=${SERVICES_PATH}/${SPEECH_SYNTHESIS_NAME}
+ExecStartPost=/bin/bash ${ON_START_SCRIPT} %p
+ExecStopPost=/bin/bash ${ON_STOP_SCRIPT} %p
 "
 
 echo -e "$SPEECH_SYNTHESIS_UNIT_FILE" > $UNITS_PATH/$SPEECH_SYNTHESIS_SERVICE_NAME

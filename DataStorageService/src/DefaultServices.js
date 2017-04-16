@@ -21,16 +21,16 @@ module.exports = [
             }
         }
     },
-    {
-        applicationName: 'Droid Data Storage Service',
-        serviceName: 'data-storage',
-        description: 'NodeJS Redis Based Data Storage Service'
-    },
-    {
-        applicationName: 'Droid Maintenance Service',
-        serviceName: 'application-maintenance',
-        description: 'NodeJS + Bash Maintenance Service'
-    },
+    // {
+    //     applicationName: 'Droid Data Storage Service',
+    //     serviceName: 'data-storage',
+    //     description: 'NodeJS Redis Based Data Storage Service'
+    // },
+    // {
+    //     applicationName: 'Droid Maintenance Service',
+    //     serviceName: 'application-maintenance',
+    //     description: 'NodeJS + Bash Maintenance Service'
+    // },
     {
         applicationName: 'Droid Speech Recognition Service',
         serviceName: 'speech-recognition',

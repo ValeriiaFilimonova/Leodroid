@@ -7,6 +7,7 @@ source ../env.opts
 FAILURE_MONITORING_UNIT_FILE="
 [Unit]
 Description=Bash Script To Run On Service Failure
+Requires=${DATA_STORAGE_SERVICE_NAME}
 
 [Service]
 Type=simple

@@ -17,8 +17,7 @@ fi
 cp -r lib $LIB_PATH
 cp -r exe $SERVICES_PATH
 cp units/* $SYSTEMD_PATH
-cp -r ./MonitoringService/OnFailureScript.sh $SERVICES_PATH
-cp -r ./MonitoringService/OnStopScript.sh $SERVICES_PATH
+cp -r ./MonitoringService/src/*.sh $SERVICES_PATH
 
 # copy sphinx models directory if not exists
 if [ ! -d "$SERVICES_PATH/models" ]

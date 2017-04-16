@@ -10,7 +10,7 @@ Requires=redis-server.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 ExecStart=${SERVICES_PATH}/${DATA_STORAGE_NAME}
 "
 
