@@ -1,19 +1,12 @@
 'use strict';
 
-const _ = require('lodash');
+const data = require('./service.json');
 
-const JavaService = require('./common/JavaService');
+const ServiceBuilder = require('./common/ServiceBuilder');
 const ServiceRegister = require('./common/ServiceRegister');
 
-const service = {
-    applicationName: 'Hello World',
-    description: 'Some text here',
-    type: 'Java', // Exec or Java
-    mainClass: 'Hello',
-    dependencies: ['lol.jar', 'molol.jar'],
-    commands: ['Say Hello']
-};
+const serviceInstance = ServiceBuilder.build(data);
 
-//TODO add service builder to build service instance from config file
-const serviceInstance = new JavaService(service);
-ServiceRegister.add(serviceInstance);
+ServiceRegister.add(serviceInstance)
+    .then(() => process.exit(0))
+    .catch((err) => console.log(err));

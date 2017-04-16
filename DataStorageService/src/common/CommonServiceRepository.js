@@ -46,11 +46,12 @@ class CommonServiceRepository extends BaseRepository {
                 }
 
                 const commands = info.commands && JSON.parse(info.commands);
-                return _(info)
-                    .assign({ commands })
-                    .omitBy(_.isUndefined)
-                    .omit(['mainClass', 'dependencies'])
-                    .value();
+                return {
+                    applicationName: info.applicationName,
+                    description: info.description,
+                    serviceName: info.serviceName,
+                    commands: commands,
+                };
             });
     }
 

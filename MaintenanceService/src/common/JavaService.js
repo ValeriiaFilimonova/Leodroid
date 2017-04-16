@@ -34,6 +34,13 @@ class JavaService extends Service {
 
         return `${this._javaBinPath} ${classPath} ${this.mainClass}`;
     }
+
+    toStorageModel() {
+        return _.extend(super.toStorageModel(), {
+            mainClass: this.mainClass,
+            dependencies: !!this.dependencies,
+        });
+    }
 }
 
 module.exports = JavaService;

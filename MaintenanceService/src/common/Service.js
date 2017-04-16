@@ -6,7 +6,6 @@ const errors = require('../Errors');
 class Service {
     constructor(data) {
         this._validate(['applicationName', 'commands'], data);
-        this._validateCommands(data.commands);
 
         this._applicationName = data.applicationName;
         this._description = data.description;
@@ -21,10 +20,8 @@ class Service {
         });
     }
 
-    _validateCommands(commands) {
-        if (!_.isArray(commands) || _.some(commands, _.negate(_.isString))) {
-            throw new errors.ValidationError('Commands must be an array of strings');
-        }
+    //TODO add some id
+    get identifier() {
     }
 
     get applicationName() {
@@ -48,7 +45,16 @@ class Service {
     }
 
     get executionCommand() {
-        return `:${Service.applicationsPath}/${this.directoryName}`;
+        return `${Service.applicationsPath}/${this.directoryName}`;
+    }
+
+    toStorageModel() {
+        return {
+            identifier: this.identifier,
+            applicationName: this.applicationName,
+            description: this.description,
+            commands: this.commands,
+        };
     }
 
     static get applicationsPath() {

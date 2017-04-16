@@ -8,12 +8,12 @@ const Service = require('../common/Service');
 
 class UnitFileService {
     constructor(service) {
-        this._systemdPath = '/etc/systemd/system';
+        // this._systemdPath = '/etc/systemd/system';
+        this._systemdPath = '/home/valera/Documents/IdeaProjects/DroidSystem/MaintenanceService/';
         this._service = service;
 
         this._writeFile = bluebird.promisify(fs.writeFile);
         this._deleteFile = bluebird.promisify(fs.unlink);
-        this._readFile = bluebird.promisify(fs.readFile);
     }
 
     get fileName() {
@@ -42,22 +42,18 @@ class UnitFileService {
             });
     }
 
-    //TODO remove after service is ready
-    readUnitFile() {
-        return this._readFile(this.fileName, 'utf8')
-            .then((contents) => console.log(contents));
-    }
-
     static get template() {
         return _.template(
             '[Unit]\n' +
             'Description=<%= description %>\n' +
             'Requires=droid-builtin.target\n' +
+            'OnFailure=failure-monitoring.service\n' +
             '[Service]\n' +
             'Type=simple\n' +
             'Restart=on-failure\n' +
             'ExecStart=<%= startCommand %>\n' +
-            'ExecStopPost=/bin/bash <%= applicationsPath %>/OnStopScript.sh %p\n'
+            'ExecStopPost=/bin/bash <%= applicationsPath %>/OnStopScript.sh %p\n' +
+            'ExecStartPost=/bin/bash <%= applicationsPath %>/OnStartScript.sh %p\n'
         );
     }
 }
