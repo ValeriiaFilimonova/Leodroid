@@ -3,7 +3,6 @@
 const _ = require('lodash');
 const fs = require('fs');
 const bluebird = require('bluebird');
-const errors = require('../Errors');
 const Service = require('../common/Service');
 
 class UnitFileService {
@@ -29,17 +28,11 @@ class UnitFileService {
     }
 
     createUnitFile() {
-        return this._writeFile(this.fileName, this.unitFile)
-            .catch((err) => {
-                throw new errors.ServiceAddingError('Failed to write unit file', err);
-            });
+        return this._writeFile(this.fileName, this.unitFile);
     }
 
     removeUnitFile() {
-        return this._deleteFile(this.fileName)
-            .catch((err) => {
-                throw new errors.ServiceRemovingError('Failed to remove unit file', err);
-            });
+        return this._deleteFile(this.fileName);
     }
 
     static get template() {

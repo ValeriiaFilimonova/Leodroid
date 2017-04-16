@@ -11,12 +11,13 @@
         "description": "Says the current temperature in the given town"
       },
       "humInTown": {
-        "rule": "What humidity in <town>",
+        "rule": "What humidity in <city>",
         "description": "Says the current humidity in the given town"
       }
     },
     "params": {
-      "town": ["Moscow", "London", "Tokio"]
+      "town": ["Moscow", "London", "Tokio"],
+      "city": ["Berlin", "Rome"]
     }
   }
 }

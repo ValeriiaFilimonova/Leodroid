@@ -2,14 +2,16 @@
 
 const errors = require('../Errors');
 const Service = require('./Service');
-const UnitFileManager = require('../helpers/UnitFileManager');
+const SphinxConfigurator = require('../sphinx/SphinxConfigurator');
 const DataStorageClient = require('../helpers/DataStorageClient');
+const UnitFileManager = require('../helpers/UnitFileManager');
 
 class ServiceRegister {
     constructor(service) {
         this._service = service;
-        this._systemdManager = new UnitFileManager(service);
+        this._sphinxConfigurator = SphinxConfigurator;
         this._storageClient = DataStorageClient;
+        this._systemdManager = new UnitFileManager(service);
     }
 
     static add(service) {
@@ -17,19 +19,17 @@ class ServiceRegister {
 
         return register._storageClient.getService(service.serviceName)
             .then((service) => {
-                throw new errors.ServiceAddingError(`Application ${service.applicationName} already exists`);
+                throw new errors.ValidationError(`Application ${service.applicationName} already exists`);
             })
             .catch((err) => {
-                if (err.status !== 404) {
-                    throw new errors.ServiceAddingError('Failed to add application', err);
-                }
+                if (err.status !== 404) throw err;
             })
+            .then(() => register._systemdManager.createUnitFile())
+            .then(() => register._sphinxConfigurator.addCommands(service))
             .then(() => register._storageClient.addNewService(service))
-            .then(() => register._systemdManager.createUnitFile());
-
-        // create and write unit file
-        // add commands to dictionary and restart service
-        // send data to data storage service
+            .catch((err) => {
+                throw new errors.ServiceAddingError(`Error installing application '${service.applicationName}'`, err);
+            });
     }
 
     static remove(service) {

@@ -9,6 +9,12 @@ class DataStorageClient {
         this._path = '/storage/services/';
     }
 
+    getCommands() {
+        return request
+            .get(this._host + this._path + '_commands')
+            .set('Accept', 'application/json');
+    }
+
     getService(serviceName) {
         return request
             .get(this._host + this._path + serviceName)
@@ -28,7 +34,9 @@ class DataStorageClient {
             .send(service.toStorageModel());
     }
 
-    removeService() {
+    removeService(service) {
+        return request
+            .delete(this._host + this._path + service.serviceName);
     }
 }
 
