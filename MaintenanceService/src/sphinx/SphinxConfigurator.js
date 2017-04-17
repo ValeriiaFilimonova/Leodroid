@@ -22,8 +22,7 @@ class SphinxConfigurator {
                 newCommands = { [service.applicationName.toLowerCase()]: service.commands };
             })
             .then(() => this._dictionaryManager.addToDictionary(existingCommands, newCommands))
-            .then(() => this._grammarManager.addToGrammar(newCommands));
-        // add to grammar
+            .then(() => this._grammarManager.generateGrammar(_.assign(existingCommands, newCommands)));
         // reload service
     }
 }

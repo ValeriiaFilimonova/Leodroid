@@ -8,13 +8,13 @@ class ValidationError extends Error {
 
 class ServiceAddingError extends Error {
     constructor(message, err) {
-        super(`${message}: ${err.message}`);
+        super(`${message}\n${err.stack}`);
     }
 }
 
 class ServiceRemovingError extends Error {
     constructor(message, err) {
-        super(`${message}: ${err.message}`);
+        super(`${message}\n${err.stack}`);
     }
 }
 

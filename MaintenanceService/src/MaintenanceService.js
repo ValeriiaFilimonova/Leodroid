@@ -9,4 +9,4 @@ const serviceInstance = ServiceBuilder.build(data);
 
 ServiceRegister.add(serviceInstance)
     .then(() => process.exit(0))
-    .catch((err) => console.log(err));
+    .catch((err) => console.err(err));

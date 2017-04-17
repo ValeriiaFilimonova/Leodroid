@@ -1,15 +1,17 @@
 'use strict';
 
 const _ = require('lodash');
+const shortId = require('shortid');
 const errors = require('../Errors');
 
 class Service {
     constructor(data) {
         this._validate(['applicationName', 'commands'], data);
 
+        this._identifier = shortId.generate();
         this._applicationName = data.applicationName;
         this._description = data.description;
-        this._commands = data.commands;
+        this._commands = _.assign(data.commands, { serviceId: this._identifier });
     }
 
     _validate(requiredProperties, data) {
@@ -20,8 +22,8 @@ class Service {
         });
     }
 
-    //TODO add some id
     get identifier() {
+        return this._identifier;
     }
 
     get applicationName() {

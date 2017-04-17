@@ -9,7 +9,7 @@ class DictionaryManager {
         this._dictionaryPath = modelsPath + "dictionary.dict";
         this._fullDictionaryPath = modelsPath + "full_dictionary.dict";
 
-        this.excludedServiceName = "application-managing";
+        this.excludedServiceNames = ["application-managing"];
         this.exec = bluebird.promisify(childProcess.exec);
     }
 
@@ -29,7 +29,7 @@ class DictionaryManager {
     }
 
     _getApplicationNameWords(name) {
-        return name !== this.excludedServiceName ? _.words(name) : null;
+        return !_.includes(this.excludedServiceNames, name) ? _.words(name) : null;
     }
 
     _getUniqueWordsFrom(commands) {
