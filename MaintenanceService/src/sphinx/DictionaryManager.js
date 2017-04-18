@@ -32,8 +32,8 @@ class DictionaryManager {
         return !_.includes(this.excludedServiceNames, name) ? _.words(name) : null;
     }
 
-    _getUniqueWordsFrom(commands) {
-        const phrases = _(commands)
+    _getPhrasesFrom(commands) {
+        return _(commands)
             .map((command, serviceName) => {
                 const serviceParams = this._getParamsWords(command.params);
                 const serviceRules = this._getRulesWords(command.rules, _.keys(command.params));
@@ -42,23 +42,49 @@ class DictionaryManager {
             })
             .flatten()
             .value();
+    }
 
-        return _(phrases)
+    _getWordsFrom(commands) {
+        return _(this._getPhrasesFrom(commands))
             .map(_.words)
             .flatten()
-            .uniq()
             .value();
     }
 
+    _getWordsUsageTree(commands) {
+        const usage = {};
+        const words = this._getWordsFrom(commands);
+        words.forEach((word) => {
+            if (!usage[word]) {
+                usage[word] = 1;
+            } else {
+                usage[word]++;
+            }
+        });
+        return usage;
+    }
+
     addToDictionary(existingCommands, newCommands) {
-        const existingWords = this._getUniqueWordsFrom(existingCommands);
-        const newWords = this._getUniqueWordsFrom(newCommands);
+        const existingWords = this._getWordsFrom(existingCommands);
+        const newWords = this._getWordsFrom(newCommands);
         const wordsToAdd = _.difference(newWords, existingWords);
 
         return bluebird
             .map(wordsToAdd, (word) => {
                 return this.exec(`cat ${this._fullDictionaryPath} | grep -e '^${word}[ |(]' >> ${this._dictionaryPath}`);
             });
+    }
+
+    removeFromDictionary(allCommands, obsoleteCommands) {
+        const wordsUsage = this._getWordsUsageTree(allCommands);
+        const obsoleteWords = this._getWordsUsageTree(obsoleteCommands);
+        const wordsToRemove = _(obsoleteWords)
+            .omitBy((count, word) => wordsUsage[word] !== count)
+            .keys()
+            .value();
+
+        const regexp = _.join(wordsToRemove, '.*\\|');
+        return this.exec(`sed -i -e '/${regexp}/ d' ${this._dictionaryPath}`);
     }
 }
 

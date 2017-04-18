@@ -19,11 +19,24 @@ class SphinxConfigurator {
         return DataStorageClient.getCommands()
             .then((response) => {
                 existingCommands = response.body;
-                newCommands = { [service.applicationName.toLowerCase()]: service.commands };
+                newCommands = { [service.serviceName]: service.commands };
             })
             .then(() => this._dictionaryManager.addToDictionary(existingCommands, newCommands))
             .then(() => this._grammarManager.generateGrammar(_.assign(existingCommands, newCommands)));
-        // reload service
+            // reload service
+    }
+
+    removeCommands(service) {
+        let allCommands, obsoleteCommands;
+
+        return DataStorageClient.getCommands()
+            .then((response) => {
+                allCommands = response.body;
+                obsoleteCommands = { [service.serviceName]: allCommands[service.serviceName] };
+            })
+            .then(() => this._dictionaryManager.removeFromDictionary(allCommands, obsoleteCommands))
+            .then(() => this._grammarManager.generateGrammar(_.omit(allCommands, service.serviceName)));
+            // reload service
     }
 }
 

@@ -8,8 +8,11 @@ class Service {
     constructor(data) {
         this._validate(['applicationName', 'commands'], data);
 
-        this._identifier = shortId.generate();
+        this._dependenciesPath = '/usr/lib/droid-system';
+
+        this._identifier = data.identifier || shortId.generate();
         this._applicationName = data.applicationName;
+        this._serviceName = data.serviceName || _.kebabCase(this._applicationName);
         this._description = data.description;
         this._commands = _.assign(data.commands, { serviceId: this._identifier });
     }
@@ -31,7 +34,7 @@ class Service {
     }
 
     get serviceName() {
-        return _.kebabCase(this.applicationName);
+        return this._serviceName;
     }
 
     get directoryName() {

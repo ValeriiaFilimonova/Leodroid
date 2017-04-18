@@ -9,7 +9,6 @@ class JavaService extends Service {
         this._validate(['mainClass'], data);
 
         this._javaBinPath = '/usr/bin/java';
-        this._dependenciesPath = '/usr/lib/droid-system';
 
         this._mainClass = data.mainClass;
         this._dependencies = data.dependencies || [];

@@ -2,13 +2,13 @@
 
 const errors = require('../Errors');
 const Service = require('./Service');
+const ServiceBuilder = require('./ServiceBuilder');
 const SphinxConfigurator = require('../sphinx/SphinxConfigurator');
 const DataStorageClient = require('../helpers/DataStorageClient');
 const UnitFileManager = require('../helpers/UnitFileManager');
 
 class ServiceRegister {
     constructor(service) {
-        this._service = service;
         this._sphinxConfigurator = SphinxConfigurator;
         this._storageClient = DataStorageClient;
         this._systemdManager = new UnitFileManager(service);
@@ -16,26 +16,24 @@ class ServiceRegister {
 
     static add(service) {
         const register = new ServiceRegister(service);
-
-        return register._storageClient.getService(service.serviceName)
-            .then((service) => {
-                throw new errors.ValidationError(`Application ${service.applicationName} already exists`);
-            })
-            .catch((err) => {
-                if (err.status !== 404) throw err;
-            })
-            .then(() => register._systemdManager.createUnitFile())
+        return register._systemdManager.createUnitFile()
             .then(() => register._sphinxConfigurator.addCommands(service))
             .then(() => register._storageClient.addNewService(service))
             .catch((err) => {
                 throw new errors.ServiceAddingError(`Error installing application '${service.applicationName}'`, err);
             });
+        // copy dependencies if exists
     }
 
     static remove(service) {
-        // check if stop is needed and remove
-        // remove data from data storage
-        // remove commands from dictionary but only not used by other services
+        const register = new ServiceRegister(service);
+        return register._systemdManager.removeUnitFile()
+            .then(() => register._sphinxConfigurator.removeCommands(service))
+            .then(() => register._storageClient.removeService(service))
+            .catch((err) => {
+                throw new errors.ServiceRemovingError(`Error uninstalling application '${service.applicationName}'`, err);
+            });
+        // remove folder with dependencies if exists
     }
 }
 

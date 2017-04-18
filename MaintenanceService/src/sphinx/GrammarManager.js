@@ -73,7 +73,11 @@ class GrammarManager {
             .filter(name => !_.includes(this._excludedAppNames, name))
             .map(_.lowerCase)
             .value();
-        this._grammar.alt('appName', names);
+        if (_.isEmpty(names)) {
+            this._grammar.word('appName', ' ');
+        } else {
+            this._grammar.alt('appName', names);
+        }
     }
 
     generateGrammar(commands) {

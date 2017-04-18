@@ -32,7 +32,9 @@ class UnitFileService {
     }
 
     removeUnitFile() {
-        return this._deleteFile(this.fileName);
+        return this._deleteFile(this.fileName)
+            // TODO handle somehow
+            .catch((err) => console.warn(err));
     }
 
     static get template() {
