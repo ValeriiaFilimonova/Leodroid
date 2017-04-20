@@ -1,0 +1,33 @@
+{
+  "applicationName": "Weather",
+  "description": "Weather Service",
+  "type": "Java",
+  "mainClass": "WeatherService",
+  "dependencies": [
+    "owm-japis-2.5.0.3.jar"
+  ],
+  "commands": {
+    "rules": {
+      "tempInTown": {
+        "rule": "Temperature in <city>",
+        "description": "Says the current temperature in the given town"
+      },
+      "humInTown": {
+        "rule": "Humidity in <city>",
+        "description": "Says the current humidity in the given town"
+      }
+    },
+    "params": {
+      "city": [
+        "Moscow",
+        "Ivanovo",
+        "London",
+        "Berlin",
+        "Tokyo"
+      ]
+    },
+    "dictionary": {
+      "Ivanovo": "IH V AH N AA V OW"
+    }
+  }
+}
