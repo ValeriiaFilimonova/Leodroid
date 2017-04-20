@@ -2,8 +2,8 @@
 
 const data = require('./service.json');
 const errors = require('./Errors');
+const ServiceRegister = require('./ServiceRegister');
 const ServiceBuilder = require('./common/ServiceBuilder');
-const ServiceRegister = require('./common/ServiceRegister');
 const DataStorageClient = require('./helpers/DataStorageClient');
 
 const service = ServiceBuilder.build(data);
@@ -24,6 +24,7 @@ if (add) {
             process.exit(1)
         })
         .then(() => process.exit(0));
+        // copy file and dependencies
 } else {
     DataStorageClient.getService(service.serviceName)
         .then((response) => ServiceBuilder.build(response))
@@ -39,4 +40,5 @@ if (add) {
             process.exit(1)
         })
         .then(() => process.exit(0));
+        // copy file and dependencies
 }

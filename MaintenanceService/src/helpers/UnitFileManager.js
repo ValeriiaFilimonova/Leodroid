@@ -7,6 +7,7 @@ const Service = require('../common/Service');
 
 class UnitFileService {
     constructor(service) {
+        // TODO not forget to uncomment
         // this._systemdPath = '/etc/systemd/system';
         this._systemdPath = '/home/valera/Documents/IdeaProjects/DroidSystem/MaintenanceService/';
         this._service = service;
@@ -33,8 +34,9 @@ class UnitFileService {
 
     removeUnitFile() {
         return this._deleteFile(this.fileName)
-            // TODO handle somehow
-            .catch((err) => console.warn(err));
+            .catch((err) => {
+                console.warn(`Unit file '${this.fileName}' not exists`);
+            });
     }
 
     static get template() {

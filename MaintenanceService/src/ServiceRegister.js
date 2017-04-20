@@ -1,11 +1,9 @@
 'use strict';
 
-const errors = require('../Errors');
-const Service = require('./Service');
-const ServiceBuilder = require('./ServiceBuilder');
-const SphinxConfigurator = require('../sphinx/SphinxConfigurator');
-const DataStorageClient = require('../helpers/DataStorageClient');
-const UnitFileManager = require('../helpers/UnitFileManager');
+const errors = require('./Errors');
+const SphinxConfigurator = require('./sphinx/SphinxConfigurator');
+const DataStorageClient = require('./helpers/DataStorageClient');
+const UnitFileManager = require('./helpers/UnitFileManager');
 
 class ServiceRegister {
     constructor(service) {
@@ -22,7 +20,6 @@ class ServiceRegister {
             .catch((err) => {
                 throw new errors.ServiceAddingError(`Error installing application '${service.applicationName}'`, err);
             });
-        // copy dependencies if exists
     }
 
     static remove(service) {
@@ -33,7 +30,6 @@ class ServiceRegister {
             .catch((err) => {
                 throw new errors.ServiceRemovingError(`Error uninstalling application '${service.applicationName}'`, err);
             });
-        // remove folder with dependencies if exists
     }
 }
 
