@@ -6,20 +6,18 @@ class ValidationError extends Error {
     }
 }
 
-class ServiceAddingError extends Error {
+class ServiceMaintenanceError extends Error {
     constructor(message, err) {
-        super(`${message}\n${err.stack}`);
+        super(message);
+        this._cause = err;
     }
-}
 
-class ServiceRemovingError extends Error {
-    constructor(message, err) {
-        super(`${message}\n${err.stack}`);
+    get cause() {
+        return this._cause;
     }
 }
 
 module.exports = {
     ValidationError: ValidationError,
-    ServiceAddingError: ServiceAddingError,
-    ServiceRemovingError: ServiceRemovingError,
+    ServiceMaintenanceError: ServiceMaintenanceError,
 };

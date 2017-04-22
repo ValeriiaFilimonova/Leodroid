@@ -20,11 +20,11 @@ if (add) {
         })
         .then(() => ServiceRegister.add(service))
         .catch((err) => {
-            console.trace(err);
+            console.trace(err && err.cause);
             process.exit(1)
         })
         .then(() => process.exit(0));
-        // copy file and dependencies
+    // copy file and dependencies
 } else {
     DataStorageClient.getService(service.serviceName)
         .then((response) => ServiceBuilder.build(response))
@@ -36,9 +36,9 @@ if (add) {
         })
         .then((service) => ServiceRegister.remove(service))
         .catch((err) => {
-            console.trace(err);
+            console.trace(err && err.cause);
             process.exit(1)
         })
         .then(() => process.exit(0));
-        // copy file and dependencies
+    // copy file and dependencies
 }

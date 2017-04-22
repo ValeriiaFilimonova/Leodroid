@@ -18,7 +18,7 @@ class ServiceRegister {
             .then(() => register._sphinxConfigurator.addCommands(service))
             .then(() => register._storageClient.addNewService(service))
             .catch((err) => {
-                throw new errors.ServiceAddingError(`Error installing application '${service.applicationName}'`, err);
+                throw new errors.ServiceMaintenanceError(`Error installing application '${service.applicationName}'`, err);
             });
     }
 
@@ -28,7 +28,7 @@ class ServiceRegister {
             .then(() => register._sphinxConfigurator.removeCommands(service))
             .then(() => register._storageClient.removeService(service))
             .catch((err) => {
-                throw new errors.ServiceRemovingError(`Error uninstalling application '${service.applicationName}'`, err);
+                throw new errors.ServiceMaintenanceError(`Error uninstalling application '${service.applicationName}'`, err);
             });
     }
 }

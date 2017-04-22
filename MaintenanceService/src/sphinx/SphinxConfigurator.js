@@ -7,6 +7,7 @@ const DataStorageClient = require('../helpers/DataStorageClient');
 
 class SphinxConfigurator {
     constructor() {
+        // TODO not forget to uncomment
         // this._modelsPath = "/usr/share/droid-system/models/en/";
         this._modelsPath = '/home/valera/Documents/IdeaProjects/DroidSystem/SpeechRecognitionService/src/models/en/';
         this._dictionaryManager = new DictionaryManager(this._modelsPath);
@@ -21,7 +22,7 @@ class SphinxConfigurator {
                 existingCommands = response.body;
                 newCommands = { [service.serviceName]: service.commands };
             })
-            .then(() => this._dictionaryManager.addToDictionary(existingCommands, newCommands))
+            .then(() => this._dictionaryManager.addToDictionary(existingCommands, newCommands, service.serviceName))
             .then(() => this._grammarManager.generateGrammar(_.assign(existingCommands, newCommands)));
             // reload service
     }

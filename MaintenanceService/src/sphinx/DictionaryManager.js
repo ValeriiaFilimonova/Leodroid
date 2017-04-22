@@ -4,6 +4,8 @@ const _ = require('lodash');
 const bluebird = require('bluebird');
 const childProcess = require('child_process');
 
+const errors = require('../Errors');
+
 class DictionaryManager {
     constructor(modelsPath) {
         this._dictionaryPath = modelsPath + "dictionary.dict";
@@ -64,14 +66,31 @@ class DictionaryManager {
         return usage;
     }
 
-    addToDictionary(existingCommands, newCommands) {
+    addToDictionary(existingCommands, newCommands, serviceName) {
         const existingWords = this._getWordsFrom(existingCommands);
         const newWords = this._getWordsFrom(newCommands);
-        const wordsToAdd = _.difference(newWords, existingWords);
+        const wordsToFind = _.difference(newWords, existingWords);
+
+        const customEntries = _(newCommands[serviceName].dictionary)
+            .map((value, word) => {
+                _.pull(wordsToFind, word);
+                return word + ' ' + value;
+            })
+            .value();
 
         return bluebird
-            .map(wordsToAdd, (word) => {
-                return this.exec(`cat ${this._fullDictionaryPath} | grep -e '^${word}[ |(]' >> ${this._dictionaryPath}`);
+            .map(wordsToFind, (word) => {
+                return this.exec(`cat ${this._fullDictionaryPath} | grep -e '^${word}[ |(]'`)
+                    .catch((err) => {
+                        if (err instanceof bluebird.OperationalError) {
+                            throw new errors.ValidationError(`There is no '${word}' word in the dictionary`);
+                        }
+                        throw err;
+                    });
+            })
+            .then((results) => {
+                const lineToInsert = _.join(results, '') + _.join(customEntries, '\n');
+                return this.exec(`echo "${_.trimEnd(lineToInsert, '\n')}" >> ${this._dictionaryPath}`);
             });
     }
 
