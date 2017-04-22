@@ -6,7 +6,7 @@ const errors = require('../Errors');
 
 class Service {
     constructor(data) {
-        this._validate(['applicationName', 'commands'], data);
+        this._validate(['applicationName', 'executable', 'commands'], data);
 
         this._dependenciesPath = '/usr/lib/droid-system';
 
@@ -14,6 +14,7 @@ class Service {
         this._applicationName = data.applicationName;
         this._serviceName = data.serviceName || _.kebabCase(this._applicationName);
         this._description = data.description;
+        this._executable = data.executable;
         this._commands = _.assign(data.commands, { serviceId: this._identifier });
     }
 
@@ -39,6 +40,10 @@ class Service {
 
     get directoryName() {
         return _.upperFirst(_.camelCase(this.applicationName));
+    }
+
+    get executable() {
+        return this._executable;
     }
 
     get description() {

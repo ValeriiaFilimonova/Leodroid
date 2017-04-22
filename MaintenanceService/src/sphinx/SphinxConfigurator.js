@@ -1,17 +1,19 @@
 'use strict';
 
 const _ = require('lodash');
+const errors = require('../Errors');
 const DictionaryManager = require('./DictionaryManager');
 const GrammarManager = require('./GrammarManager');
 const DataStorageClient = require('../helpers/DataStorageClient');
 
 class SphinxConfigurator {
-    constructor() {
-        // TODO not forget to uncomment
-        // this._modelsPath = "/usr/share/droid-system/models/en/";
-        this._modelsPath = '/home/valera/Documents/IdeaProjects/DroidSystem/SpeechRecognitionService/src/models/en/';
-        this._dictionaryManager = new DictionaryManager(this._modelsPath);
-        this._grammarManager = new GrammarManager(this._modelsPath);
+    constructor(dictionaryPath, grammarPath) {
+        if (_.isEmpty(dictionaryPath) || _.isEmpty(grammarPath)) {
+            throw  new errors.ValidationError('SphinxConfigurator needs dictionary and grammar paths specified');
+        }
+
+        this._dictionaryManager = new DictionaryManager(dictionaryPath);
+        this._grammarManager = new GrammarManager(grammarPath);
     }
 
     addCommands(service) {

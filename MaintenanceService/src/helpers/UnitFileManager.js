@@ -3,25 +3,27 @@
 const _ = require('lodash');
 const fs = require('fs');
 const bluebird = require('bluebird');
+const errors = require('../Errors');
 const Service = require('../common/Service');
 
-class UnitFileService {
-    constructor(service) {
-        // TODO not forget to uncomment
-        // this._systemdPath = '/etc/systemd/system';
-        this._systemdPath = '/home/valera/Documents/IdeaProjects/DroidSystem/MaintenanceService/';
+class UnitFileManager {
+    constructor(service, path) {
+        if (_.isEmpty(service) || _.isEmpty(path)) {
+            throw  new errors.ValidationError('UnitFileManager needs path and service instance specified');
+        }
+
+        this._path = path;
         this._service = service;
 
         this._writeFile = bluebird.promisify(fs.writeFile);
-        this._deleteFile = bluebird.promisify(fs.unlink);
     }
 
     get fileName() {
-        return `${this._systemdPath}/${this._service.serviceName}.service`;
+        return `${this._path}/${this._service.serviceName}.service`;
     }
 
     get unitFile() {
-        return UnitFileService.template({
+        return UnitFileManager.template({
             description: this._service.description || this._service.applicationName,
             startCommand: this._service.executionCommand,
             applicationsPath: Service.applicationsPath,
@@ -30,13 +32,6 @@ class UnitFileService {
 
     createUnitFile() {
         return this._writeFile(this.fileName, this.unitFile);
-    }
-
-    removeUnitFile() {
-        return this._deleteFile(this.fileName)
-            .catch((err) => {
-                console.warn(`Unit file '${this.fileName}' not exists`);
-            });
     }
 
     static get template() {
@@ -55,4 +50,4 @@ class UnitFileService {
     }
 }
 
-module.exports = UnitFileService;
+module.exports = UnitFileManager;

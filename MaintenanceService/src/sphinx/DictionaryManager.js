@@ -7,9 +7,9 @@ const childProcess = require('child_process');
 const errors = require('../Errors');
 
 class DictionaryManager {
-    constructor(modelsPath) {
-        this._dictionaryPath = modelsPath + "dictionary.dict";
-        this._fullDictionaryPath = modelsPath + "full_dictionary.dict";
+    constructor(path) {
+        this._dictionaryPath = path;
+        this._fullDictionaryPath = path + '.full';
 
         this.excludedServiceNames = ["application-managing"];
         this.exec = bluebird.promisify(childProcess.exec);

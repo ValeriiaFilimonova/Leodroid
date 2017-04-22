@@ -7,8 +7,8 @@ const jspeech = require('jspeech').default;
 const errors = require('../Errors');
 
 class GrammarManager {
-    constructor(modelsPath) {
-        this._grammarPath = modelsPath + "grammar.gram";
+    constructor(path) {
+        this._grammarPath = path;
         this._excludedAppNames = ["application-managing"];
         this._writeFile = bluebird.promisify(fs.writeFile);
         this._grammar = jspeech('grammar', {
