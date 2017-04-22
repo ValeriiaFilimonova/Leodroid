@@ -4,6 +4,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const bluebird = require('bluebird');
 const jspeech = require('jspeech').default;
+
 const errors = require('../Errors');
 
 class GrammarManager {
@@ -18,8 +19,15 @@ class GrammarManager {
         });
     }
 
-    _getKey(key, id) {
-        return id ? `${key}_${id}` : key;
+    generateGrammar(commands) {
+        _(commands).forOwn((command) => {
+            this._generateParams(command);
+            this._generateRules(command);
+        });
+
+        this._generateAppNames(commands);
+
+        return this._writeFile(this._grammarPath, this._grammar.stringify());
     }
 
     _generateParams(commands) {
@@ -32,6 +40,22 @@ class GrammarManager {
                 return;
             }
             this._grammar.alt(this._getKey(key, commands.serviceId), array.map(_.lowerCase));
+        });
+    }
+
+    _generateRules(commands) {
+        if (_.isEmpty(commands.rules)) {
+            return;
+        }
+
+        _(commands.rules).forOwn((value, key) => {
+            let params = this._getParamsInRule(value.rule, commands.params);
+
+            const rule = _.reduce(params, (rule, param) => {
+                return _.replace(rule, `<${param.toLowerCase()}>`, `<${this._getKey(param, commands.serviceId)}>`)
+            }, value.rule.toLowerCase());
+
+            this._grammar.public.rule(this._getKey(key, commands.serviceId), rule);
         });
     }
 
@@ -53,21 +77,6 @@ class GrammarManager {
         return paramsInUse;
     }
 
-    _generateRules(commands) {
-        if (_.isEmpty(commands.rules)) {
-            return;
-        }
-
-        _(commands.rules).forOwn((value, key) => {
-            let params = this._getParamsInRule(value.rule, commands.params);
-            const rule = _.reduce(params, (rule, param) => {
-                return _.replace(rule, `<${param.toLowerCase()}>`, `<${this._getKey(param, commands.serviceId)}>`)
-            }, value.rule.toLowerCase());
-
-            this._grammar.public.rule(this._getKey(key, commands.serviceId), rule);
-        });
-    }
-
     _generateAppNames(commands) {
         const names = _(commands).keys()
             .filter(name => !_.includes(this._excludedAppNames, name))
@@ -80,15 +89,8 @@ class GrammarManager {
         }
     }
 
-    generateGrammar(commands) {
-        _(commands).forOwn((command) => {
-            this._generateParams(command);
-            this._generateRules(command);
-        });
-
-        this._generateAppNames(commands);
-
-        return this._writeFile(this._grammarPath, this._grammar.stringify());
+    _getKey(key, id) {
+        return id ? `${key}_${id}` : key;
     }
 }
 

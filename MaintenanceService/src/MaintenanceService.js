@@ -1,44 +1,21 @@
 'use strict';
 
-const data = require('./service.json');
-const errors = require('./Errors');
+// const archiveUrl = 'https://failiem.lv/down.php?i=ccmn5rdn&n=weatherservice.zip';
+const archiveUrl = 'https://failiem.lv/down.php?i=6zzd3fbu&n=validpackage.zip';
+// const archiveUrl = 'https://failiem.lv/down.php?i=yfhnf4kb&n=corruptedpackage.zip';
+
 const ServiceRegister = require('./ServiceRegister');
-const ServiceBuilder = require('./common/ServiceBuilder');
-const DataStorageClient = require('./helpers/DataStorageClient');
 
-const service = ServiceBuilder.build(data);
-let add = false;
-// add = true;
+// ServiceRegister.add(archiveUrl)
+//     .then(() => process.exit(0))
+//     .catch((err) => {
+//         console.trace(err);
+//         process.exit(1);
+//     });
 
-if (add) {
-    DataStorageClient.getService(service.serviceName)
-        .then((service) => {
-            throw new errors.ValidationError(`Application ${service.applicationName} already exists`);
-        })
-        .catch((err) => {
-            if (err.status !== 404) throw err;
-        })
-        .then(() => ServiceRegister.add(service))
-        .catch((err) => {
-            console.trace(err && err.cause);
-            process.exit(1)
-        })
-        .then(() => process.exit(0));
-    // copy file and dependencies
-} else {
-    DataStorageClient.getService(service.serviceName)
-        .then((response) => ServiceBuilder.build(response))
-        .catch((err) => {
-            if (err.status === 404) {
-                throw new errors.ValidationError(`Application ${service.applicationName} doesn't exist`);
-            }
-            throw err;
-        })
-        .then((service) => ServiceRegister.remove(service))
-        .catch((err) => {
-            console.trace(err && err.cause);
-            process.exit(1)
-        })
-        .then(() => process.exit(0));
-    // copy file and dependencies
-}
+ServiceRegister.remove('weather')
+    .then(() => process.exit(0))
+    .catch((err) => {
+        console.trace(err);
+        process.exit(1);
+    });

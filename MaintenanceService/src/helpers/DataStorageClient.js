@@ -15,13 +15,24 @@ class DataStorageClient {
             .set('Accept', 'application/json');
     }
 
+    checkServiceExists(serviceName) {
+        return this.getService(serviceName)
+            .then((service) => true)
+            .catch((err) => {
+                if (err.status === 404) {
+                    return false;
+                }
+                throw err;
+            })
+    }
+
     getService(serviceName) {
         return request
             .get(this._host + this._path + serviceName)
             .set('Accept', 'application/json')
             .then((res, err) => {
                 if (err) {
-                    throw new errors.ServiceAddingError(`Error getting service info`, err);
+                    throw new errors.ServiceMaintenanceError(`Error getting service info`, err);
                 }
                 return res.body;
             });

@@ -4,7 +4,7 @@ const ExecutableService = require('./Service');
 const JavaService = require('./JavaService');
 
 class ServiceBuilder {
-    static build(data) {
+    static buildFrom(data) {
         const type = data && data.type && data.type.toLowerCase();
         switch (type) {
             case 'java':

@@ -29,7 +29,7 @@ class JavaService extends Service {
             classPath += `:${this._dependenciesPath}/${this.directoryName}/*`;
         }
 
-        classPath += `:${JavaService.applicationsPath}/${this.directoryName}.jar`;
+        classPath += `:${JavaService.applicationsPath}/${this.executable}`;
 
         return `${this._javaBinPath} ${classPath} ${this.mainClass}`;
     }

@@ -8,7 +8,7 @@ class FileSystemManager {
         this.exec = bluebird.promisify(childProcess.exec);
     }
 
-    createTempDirectoryWithDictionary() {
+    prepareTempDirectory() {
         return this.exec(`mkdir -p ${this.tempDir}`)
             .then(() => this.exec(`cp ${this.modelsDir}/${this.dictionaryFile} ${this.tempDir}`));
     }
@@ -17,28 +17,48 @@ class FileSystemManager {
         return this.exec(`rm -rf ${this.tempDir}`);
     }
 
-    copyDictionaryAndGrammar() {
+    removeTempDirectorySync() {
+        return childProcess.execSync(`rm -rf ${this.tempDir}`);
+    }
+
+    copyFiles(service) {
+        return this._copyDictionaryAndGrammar()
+            // copy unit file
+            .then(() => this.exec(`cp ${this.tempDir}/${service.serviceName}.service ${this.systemdDir}`))
+            // copy executable file
+            .then(() => this.exec(`cp ${this.tempDir}/${service.executable} ${this.servicesDir}`))
+            // copy folder with libraries (for java service)
+            .then(() => {
+                if (service.dependencies) {
+                    return bluebird.all([
+                        this.exec(`mkdir -p ${this.librariesDir}/${service.directoryName}`),
+                        this.exec(`cp ${this.tempDir}/dependencies/* ${this.librariesDir}/${service.directoryName}`),
+                    ]);
+                }
+            });
+    }
+
+    removeFiles(service) {
+        return this._copyDictionaryAndGrammar()
+            // remove unit file
+            .then(() => this.exec(`rm -f ${this.systemdDir}/${service.serviceName}.service`))
+            // remove executable file
+            .then(() => this.exec(`rm -f ${this.servicesDir}/${service.executable}`))
+            // remove folder with libraries (for java service)
+            .then(() => this.exec(`rm -rf ${this.librariesDir}/${service.directoryName}`));
+    }
+
+    _copyDictionaryAndGrammar() {
         return this.exec(`cp -f ${this.tempDir}/${this.dictionaryFile} ${this.modelsDir}/${this.dictionaryFile}`)
             .then(() => this.exec(`cp ${this.tempDir}/${this.grammarFile} ${this.modelsDir}/${this.grammarFile}`))
     }
 
-    copyFiles(service) {
-        return this.copyDictionaryAndGrammar()
-            .then(() => this.exec(`cp ${this.tempDir}/${service.serviceName}.service ${this.systemdDir}`))
-            .then(() => this.exec(`cp ${this.tempDir}/${service.executable} ${this.servicesDir}`))
-            .then(() => this.exec(`cp -rf ${this.tempDir}/dependencies ${this.librariesDir}/${service.directoryName}`));
-    }
-
-    removeFiles(service) {
-        return this.copyDictionaryAndGrammar()
-            .then(() => this.exec(`rm -f ${this.systemdDir}/${service.serviceName}.service`))
-            .then(() => this.exec(`rm -f ${this.servicesDir}/${service.executable}`))
-            .then(() => this.exec(`rm -rf ${this.librariesDir}/${service.directoryName}`));
-    }
-
     get tempDir() {
-        // return '/usr/share/droid-system/temp';
-        return '/home/valera/Documents/IdeaProjects/DroidSystem/MaintenanceService/temp';
+        return process.env.TEMP_DIRECTORY || '/usr/share/droid-system/temp';
+    }
+
+    get configFile() {
+        return this.tempDir + '/config.json';
     }
 
     get systemdDir() {
@@ -54,8 +74,11 @@ class FileSystemManager {
     }
 
     get modelsDir() {
-        // return FileSystemManager.servicesDir + '/models/en';
-        return '/home/valera/Documents/IdeaProjects/DroidSystem/SpeechRecognitionService/src/models/en';
+        return process.env.MODELS_DIRECTORY || (this.servicesDir + '/models/en');
+    }
+
+    get fullDictionaryPath() {
+        return this.modelsDir + '/dictionary.dict.full';
     }
 
     get dictionaryFile() {
@@ -66,7 +89,5 @@ class FileSystemManager {
         return 'grammar.gram';
     }
 }
-
-const FSM = FileSystemManager;
 
 module.exports = new FileSystemManager();

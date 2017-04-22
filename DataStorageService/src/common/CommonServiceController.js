@@ -37,8 +37,6 @@ class CommonServiceController extends BaseController {
             identifier: body.identifier,
             applicationName: body.applicationName,
             description: body.description,
-            mainClass: body.mainClass,
-            dependencies: body.dependencies,
             commands: body.commands,
         };
 
