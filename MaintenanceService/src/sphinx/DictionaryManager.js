@@ -11,7 +11,8 @@ class DictionaryManager {
         this._dictionaryPath = dictionaryPath;
         this._fullDictionaryPath = fullDictionaryPath;
 
-        this.excludedServiceNames = ["application-managing"];
+        this._excludedServiceNames = ["application-managing"];
+
         this.exec = bluebird.promisify(childProcess.exec);
     }
 
@@ -103,7 +104,7 @@ class DictionaryManager {
     }
 
     _getApplicationNameWords(name) {
-        return !_.includes(this.excludedServiceNames, name) ? _.words(name) : null;
+        return !_.includes(this._excludedServiceNames, name) ? _.words(name) : null;
     }
 }
 

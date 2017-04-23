@@ -1,17 +1,18 @@
 'use strict';
 
 const _ = require('lodash');
+const config = require('../config');
+const errors = require('../Errors');
 const DictionaryManager = require('./DictionaryManager');
 const GrammarManager = require('./GrammarManager');
 const DataStorageClient = require('../helpers/DataStorageClient');
-const FileManager = require('../helpers/FileSystemManager');
-
-const errors = require('../Errors');
 
 class SphinxConfigurator {
     constructor() {
-        this._dictionaryManager = new DictionaryManager(`${FileManager.tempDir}/${FileManager.dictionaryFile}`, FileManager.fullDictionaryPath);
-        this._grammarManager = new GrammarManager(`${FileManager.tempDir}/${FileManager.grammarFile}`);
+        this._dictionaryManager = new DictionaryManager(
+            `${config.path.dir.temporary}/${config.path.file.dictionary}`,
+            `${config.path.dir.models}/${config.path.file.fullDictionary}`);
+        this._grammarManager = new GrammarManager(`${config.path.dir.temporary}/${config.path.file.grammar}`);
     }
 
     addCommands(service) {

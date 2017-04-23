@@ -1,17 +1,17 @@
 'use strict';
 
 const request = require('superagent');
+const config = require('../config');
 const errors = require('../Errors');
 
 class DataStorageClient {
     constructor() {
-        this._host = 'http://localhost:8888';
-        this._path = '/storage/services/';
+        this._url = config.dataStorage.host + '/storage/services/';
     }
 
     getCommands() {
         return request
-            .get(this._host + this._path + '_commands')
+            .get(this._url + '_commands')
             .set('Accept', 'application/json');
     }
 
@@ -28,7 +28,7 @@ class DataStorageClient {
 
     getService(serviceName) {
         return request
-            .get(this._host + this._path + serviceName)
+            .get(this._url + serviceName)
             .set('Accept', 'application/json')
             .then((res, err) => {
                 if (err) {
@@ -40,14 +40,14 @@ class DataStorageClient {
 
     addNewService(service) {
         return request
-            .put(this._host + this._path + service.serviceName)
+            .put(this._url + service.serviceName)
             .set('Accept', 'application/json')
             .send(service.toStorageModel());
     }
 
     removeService(service) {
         return request
-            .delete(this._host + this._path + service.serviceName);
+            .delete(this._url + service.serviceName);
     }
 }
 

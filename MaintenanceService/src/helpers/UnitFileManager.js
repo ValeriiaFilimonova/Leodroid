@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 const fs = require('fs');
+const config = require('../config');
 const Service = require('../common/Service');
-const FileManager = require('./FileSystemManager');
 
 class UnitFileManager {
     get template() {
@@ -23,12 +23,12 @@ class UnitFileManager {
         return this.template({
             description: service.description || service.applicationName,
             startCommand: service.executionCommand,
-            applicationsPath: FileManager.servicesDir,
+            applicationsPath: config.path.dir.services,
         });
     }
 
     createUnitFile(service) {
-        const fileName = `${FileManager.tempDir}/${service.serviceName}.service`;
+        const fileName = `${config.path.dir.temporary}/${service.serviceName}.service`;
         return fs.writeFileSync(fileName, this._getFileData(service));
     }
 }

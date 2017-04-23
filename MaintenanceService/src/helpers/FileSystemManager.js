@@ -2,6 +2,7 @@
 
 const bluebird = require('bluebird');
 const childProcess = require('child_process');
+const config = require('../config');
 
 class FileSystemManager {
     constructor() {
@@ -36,8 +37,8 @@ class FileSystemManager {
             .then(() => {
                 if (service.dependencies) {
                     return bluebird.all([
-                        this.exec(`mkdir -p ${this.librariesDir}/${service.directoryName}`),
-                        this.exec(`cp ${this.tempDir}/dependencies/* ${this.librariesDir}/${service.directoryName}`),
+                        this.exec(`mkdir -p ${this.libsDir}/${service.directoryName}`),
+                        this.exec(`cp ${this.tempDir}/dependencies/* ${this.libsDir}/${service.directoryName}`),
                     ]);
                 }
             });
@@ -50,7 +51,7 @@ class FileSystemManager {
             // remove executable file
             .then(() => this.exec(`rm -r ${this.servicesDir}/${service.directoryName}`))
             // remove folder with libraries (for java service)
-            .then(() => this.exec(`rm -rf ${this.librariesDir}/${service.directoryName}`));
+            .then(() => this.exec(`rm -rf ${this.libsDir}/${service.directoryName}`));
     }
 
     _copyDictionaryAndGrammar() {
@@ -59,39 +60,31 @@ class FileSystemManager {
     }
 
     get tempDir() {
-        return process.env.TEMP_DIRECTORY || '/usr/share/droid-system/temp';
-    }
-
-    get configFile() {
-        return this.tempDir + '/config.json';
+        return config.path.dir.temporary;
     }
 
     get systemdDir() {
-        return '/etc/systemd/system';
+        return config.path.dir.systemd;
     }
 
-    get librariesDir() {
-        return '/usr/lib/droid-system';
+    get libsDir() {
+        return config.path.dir.libraries;
     }
 
     get servicesDir() {
-        return '/usr/share/droid-system';
+        return config.path.dir.services;
     }
 
     get modelsDir() {
-        return process.env.MODELS_DIRECTORY || (this.servicesDir + '/models/en');
-    }
-
-    get fullDictionaryPath() {
-        return this.modelsDir + '/dictionary.dict.full';
+        return config.path.dir.models;
     }
 
     get dictionaryFile() {
-        return 'dictionary.dict';
+        return config.path.file.dictionary;
     }
 
     get grammarFile() {
-        return 'grammar.gram';
+        return config.path.file.grammar;
     }
 }
 

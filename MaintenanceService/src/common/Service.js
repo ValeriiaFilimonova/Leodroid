@@ -2,12 +2,15 @@
 
 const _ = require('lodash');
 const shortId = require('shortid');
+const config = require('../config');
 const errors = require('../Errors');
-const FileManager = require('../helpers/FileSystemManager');
 
 class Service {
     constructor(data) {
         this._validate(['applicationName', 'executable', 'commands'], data);
+
+        this._servicesPath = config.path.dir.services;
+        this._librariesPath = config.path.dir.libraries;
 
         this._identifier = shortId.generate();
         this._applicationName = data.applicationName;
@@ -53,7 +56,7 @@ class Service {
     }
 
     get executionCommand() {
-        return `${FileManager.servicesDir}/${this.directoryName}/${this.directoryName}`;
+        return `${this._servicesPath}/${this.directoryName}/${this.directoryName}`;
     }
 
     toStorageModel() {
