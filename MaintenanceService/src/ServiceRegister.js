@@ -1,6 +1,7 @@
 'use strict';
 
 const errors = require('./Errors');
+const ServiceDataModel = require('./common/ServiceDataModel');
 const ServiceBuilder = require('./common/ServiceBuilder');
 const SphinxConfigurator = require('./sphinx/SphinxConfigurator');
 const UnitFileManager = require('./helpers/UnitFileManager');
@@ -23,9 +24,9 @@ class ServiceRegister {
             })
             .then(() => UnitFileManager.createUnitFile(service))
             .then(() => SphinxConfigurator.addCommands(service))
-            .then(() => DataStorageClient.addNewService(service))
             .then(() => FileManager.copyFiles(service))
             .then(() => FileManager.removeTempDirectory())
+            .then(() => DataStorageClient.addNewService(service))
             .then(() => SystemctlExecutor.applyChanges())
             .catch((err) => {
                 FileManager.removeTempDirectorySync();
@@ -42,7 +43,7 @@ class ServiceRegister {
         let service;
         return FileManager.prepareTempDirectory()
             .then(() => DataStorageClient.getService(applicationName))
-            .then((response) => service = ServiceBuilder.buildFrom(response))
+            .then((response) => service = new ServiceDataModel(response))
             .catch((err) => {
                 if (err.status === 404) {
                     throw new errors.ValidationError(`Application '${applicationName}' doesn't exist`);

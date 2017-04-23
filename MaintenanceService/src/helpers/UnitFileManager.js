@@ -23,7 +23,7 @@ class UnitFileManager {
         return this.template({
             description: service.description || service.applicationName,
             startCommand: service.executionCommand,
-            applicationsPath: Service.applicationsPath,
+            applicationsPath: FileManager.servicesDir,
         });
     }
 

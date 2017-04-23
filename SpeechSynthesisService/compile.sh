@@ -17,6 +17,6 @@ cd $BIN_PATH
 
 cmake ../../$SERVICE_NAME
 make
-cp $SERVICE_NAME ../$EXE_PATH/$SERVICE_NAME
+cp $SERVICE_NAME ../$EXE_PATH/$SERVICE_NAME/$SERVICE_NAME
 
 #g++ -std=c++11 -o SpeechSynthesisService -I/espeak.h -lamqpcpp -lPocoNet -lPocoFoundation src/*

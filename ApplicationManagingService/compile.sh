@@ -16,4 +16,4 @@ then
 fi
 
 javac -cp $LIBRARIES:$LIB_PATH/$SERVICE_NAME/* -d $BIN_PATH src/*/*.java src/*.java
-jar cvf $EXE_PATH/$SERVICE_NAME.jar -C $BIN_PATH/ .
+jar cvf $EXE_PATH/$SERVICE_NAME/$SERVICE_NAME.jar -C $BIN_PATH/ .

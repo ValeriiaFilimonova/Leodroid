@@ -26,7 +26,12 @@ class FileSystemManager {
             // copy unit file
             .then(() => this.exec(`cp ${this.tempDir}/${service.serviceName}.service ${this.systemdDir}`))
             // copy executable file
-            .then(() => this.exec(`cp ${this.tempDir}/${service.executable} ${this.servicesDir}`))
+            .then(() => {
+                return bluebird.all([
+                    this.exec(`mkdir -p ${this.servicesDir}/${service.directoryName}`),
+                    this.exec(`cp ${this.tempDir}/${service.executable} ${this.servicesDir}/${service.directoryName}/`),
+                ]);
+            })
             // copy folder with libraries (for java service)
             .then(() => {
                 if (service.dependencies) {
@@ -43,7 +48,7 @@ class FileSystemManager {
             // remove unit file
             .then(() => this.exec(`rm -f ${this.systemdDir}/${service.serviceName}.service`))
             // remove executable file
-            .then(() => this.exec(`rm -f ${this.servicesDir}/${service.executable}`))
+            .then(() => this.exec(`rm -r ${this.servicesDir}/${service.directoryName}`))
             // remove folder with libraries (for java service)
             .then(() => this.exec(`rm -rf ${this.librariesDir}/${service.directoryName}`));
     }

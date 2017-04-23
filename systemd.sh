@@ -16,8 +16,8 @@ done
 TARGET_UNIT_FILE="
 [Unit]
 Description=Droid System Built-In Services Target
-Requires=$SPEECH_RECOGNITION_SERVICE_NAME $SPEECH_SYNTHESIS_SERVICE_NAME $APPLICATION_MANAGING_SERVICE_NAME
-After=redis-server.service rabbitmq-server.service $DATA_STORAGE_SERVICE_NAME
+DefaultDependencies=no
+Requires=$DATA_STORAGE_NAME $SPEECH_RECOGNITION_SERVICE_NAME $SPEECH_SYNTHESIS_SERVICE_NAME $APPLICATION_MANAGING_SERVICE_NAME
 "
 echo -e "$TARGET_UNIT_FILE" > units/droid-system.target
 

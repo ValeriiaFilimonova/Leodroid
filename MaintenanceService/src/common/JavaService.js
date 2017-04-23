@@ -3,6 +3,8 @@
 const _ = require('lodash');
 const Service = require('./Service');
 
+const FileManager = require('../helpers/FileSystemManager');
+
 class JavaService extends Service {
     constructor(data) {
         super(data);
@@ -23,22 +25,15 @@ class JavaService extends Service {
     }
 
     get executionCommand() {
-        let classPath = `-cp ${this._dependenciesPath}/*`;
+        let classPath = `-cp ${FileManager.librariesDir}/*`;
 
         if (!_.isEmpty(this.dependencies)) {
-            classPath += `:${this._dependenciesPath}/${this.directoryName}/*`;
+            classPath += `:${FileManager.librariesDir}/${this.directoryName}/*`;
         }
 
-        classPath += `:${JavaService.applicationsPath}/${this.executable}`;
+        classPath += `:${FileManager.servicesDir}/${this.directoryName}/${this.executable}`;
 
         return `${this._javaBinPath} ${classPath} ${this.mainClass}`;
-    }
-
-    toStorageModel() {
-        return _.extend(super.toStorageModel(), {
-            mainClass: this.mainClass,
-            dependencies: !!this.dependencies,
-        });
     }
 }
 

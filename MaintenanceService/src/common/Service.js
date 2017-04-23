@@ -3,16 +3,14 @@
 const _ = require('lodash');
 const shortId = require('shortid');
 const errors = require('../Errors');
+const FileManager = require('../helpers/FileSystemManager');
 
 class Service {
     constructor(data) {
         this._validate(['applicationName', 'executable', 'commands'], data);
 
-        this._dependenciesPath = '/usr/lib/droid-system';
-
-        this._identifier = data.identifier || shortId.generate();
+        this._identifier = shortId.generate();
         this._applicationName = data.applicationName;
-        this._serviceName = data.serviceName || _.kebabCase(this._applicationName);
         this._description = data.description;
         this._executable = data.executable;
         this._commands = _.assign(data.commands, { serviceId: this._identifier });
@@ -35,7 +33,7 @@ class Service {
     }
 
     get serviceName() {
-        return this._serviceName;
+        return _.kebabCase(this._applicationName);
     }
 
     get directoryName() {
@@ -55,7 +53,7 @@ class Service {
     }
 
     get executionCommand() {
-        return `${Service.applicationsPath}/${this.directoryName}`;
+        return `${FileManager.servicesDir}/${this.directoryName}/${this.directoryName}`;
     }
 
     toStorageModel() {
@@ -65,10 +63,6 @@ class Service {
             description: this.description,
             commands: this.commands,
         };
-    }
-
-    static get applicationsPath() {
-        return '/usr/share/droid-system';
     }
 }
 

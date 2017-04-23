@@ -14,7 +14,7 @@ then
     rm -r $SERVICES_PATH
 fi
 
-cp -r lib $DEPENDENCIES_PATH
+cp -r lib $DEPS_PATH
 cp -r exe $SERVICES_PATH
 cp units/* $SYSTEMD_PATH
 cp -r ./MonitoringService/src/*.sh $SERVICES_PATH

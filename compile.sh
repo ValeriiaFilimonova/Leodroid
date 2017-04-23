@@ -8,5 +8,6 @@ DIRECTORIES=($SPEECH_RECOGNITION_NAME $SPEECH_SYNTHESIS_NAME $DATA_STORAGE_NAME 
 
 for directory in "${DIRECTORIES[@]}"
 do
+    mkdir "exe/$directory"
     /bin/bash $directory/$COMPILE_FILE
 done
