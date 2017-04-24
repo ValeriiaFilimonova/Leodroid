@@ -5,9 +5,9 @@
 */tmp
 
 bin/
-exe/
 lib/
 out/
+temp/
 units/
 
 
