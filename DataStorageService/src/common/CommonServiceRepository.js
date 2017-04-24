@@ -19,58 +19,72 @@ class CommonServiceRepository extends BaseRepository {
         });
     }
 
+    getAllCommands() {
+        const key = `${this._servicePrefix}*${this._commandsPostfix}`;
+        let serviceNames;
+
+        return this.client.keysAsync(key)
+            .then((keys) => {
+                serviceNames = _.map(keys, (commandsKey) => {
+                    return _.last(commandsKey.split('.', 2));
+                });
+                return bluebird.map(keys, (key) => this.client.getAsync(key));
+            })
+            .then((results) => {
+                return _.zipObject(serviceNames, results.map(JSON.parse));
+            });
+
+    }
+
     getServiceByName(serviceName) {
         const key = this._getServiceKey(serviceName);
 
-        return bluebird
-            .all([
-                this._redis.hgetallAsync(key + this._infoPostfix),
-                this._redis.hgetallAsync(key + this._commandsPostfix),
-            ])
-            .then((result) => {
-                const info = result[0];
-                const commands = result[1];
-
+        return this.client.hgetallAsync(key + this._infoPostfix)
+            .then((info) => {
                 if (_.isNull(info)) {
                     throw new errors.NotFoundError(serviceName);
                 }
 
-                return _(info)
-                    .assign({
-                        commands: commands,
-                        dependencies: this._getDependenciesArray(info.dependencies),
-                    })
-                    .omitBy(_.isUndefined)
-                    .value();
+                const commands = info.commands && JSON.parse(info.commands);
+                return {
+                    applicationName: info.applicationName,
+                    description: info.description,
+                    serviceName: info.serviceName,
+                    commands: commands,
+                };
             });
     }
 
     addOrUpdateService(serviceName, serviceModel) {
         const key = this._getServiceKey(serviceName);
-
-        const dependencies = this._validateDependencies(serviceModel.dependencies);
-        const commands = this._validateCommands(serviceModel.commands);
+        const commands = this._getCommandsPresentation(serviceModel);
 
         const service = _({ serviceName })
             .defaults(serviceModel)
-            .assign({ dependencies, commands })
+            .assign({ commands })
             .omitBy(_.isUndefined)
             .value();
 
-        return super.addService(serviceName).then(() => bluebird
-            .all([
-                this._redis.hmsetAsync(key + this._infoPostfix, _.omit(service, 'commands')),
-                this._redis.hmsetAsync(key + this._commandsPostfix, _.get(serviceModel, 'commands')),
-                this._redis.setAsync(this._getApplicationKey(serviceModel.applicationName), serviceName),
-            ])
-            .then(() => service));
+        const queries = [
+            this.client.delAsync(key + this._infoPostfix),
+            this.client.hmsetAsync(key + this._infoPostfix, service),
+            this.client.setAsync(this._getApplicationKey(serviceModel.applicationName), serviceName),
+        ];
+
+        if (commands) {
+            queries.push(this.client.setAsync(key + this._commandsPostfix, this._getCommandsString(serviceModel)));
+        }
+
+        return super.addService(serviceName)
+            .then(() => bluebird.all(queries))
+            .then(() => service);
     }
 
     removeService(serviceName) {
         const key = this._getServiceKey(serviceName);
         let serviceModel;
 
-        return this._redis.hgetallAsync(key + this._infoPostfix)
+        return this.client.hgetallAsync(key + this._infoPostfix)
             .then((serviceInfo) => {
                 if (!serviceInfo) {
                     throw new errors.NotFoundError(serviceName);
@@ -79,7 +93,7 @@ class CommonServiceRepository extends BaseRepository {
                 serviceModel = serviceInfo;
                 return super.removeService(serviceName);
             })
-            .then(() => this._redis.delAsync(
+            .then(() => this.client.delAsync(
                 key + this._infoPostfix,
                 key + this._commandsPostfix,
                 this._getApplicationKey(serviceModel.applicationName)
@@ -94,28 +108,23 @@ class CommonServiceRepository extends BaseRepository {
         return this._servicePrefix + serviceName;
     }
 
-    _getDependenciesArray(dependencies) {
-        return _.split(dependencies, ',');
-    }
+    _getCommandsPresentation(serviceModel) {
+        const fullCommands = _.get(serviceModel, 'commands.rules');
 
-    _validateDependencies(dependencies) {
-        if (dependencies) {
-            return _.flatten([dependencies]).toString();
-        }
-    }
-
-    _validateCommands(commands) {
-        if (!_.isObject(commands) || _.isEmpty(commands)) {
-            throw new errors.ValidationError('Commands must be non-empty object');
+        if (_.isEmpty(fullCommands)) {
+            return undefined;
         }
 
-        _(commands).forOwn((value, key) => {
-            if (!_.isString(value)) {
-                throw new errors.ValidationError('Command must be string key-value pair');
-            }
-        });
+        const shortCommands = _.reduce(fullCommands, (result, command) => {
+            const shortCommand = { [command.rule]: command.description };
+            return _.extend(result, shortCommand);
+        }, {});
 
-        return commands;
+        return JSON.stringify(shortCommands);
+    }
+
+    _getCommandsString(serviceModel) {
+        return JSON.stringify(serviceModel.commands);
     }
 }
 

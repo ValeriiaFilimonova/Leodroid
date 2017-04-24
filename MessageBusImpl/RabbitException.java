@@ -1,4 +1,4 @@
-package rabbitmq;
+package message.bus;
 
 public class RabbitException extends RuntimeException {
     RabbitException(Errors error, Throwable reason) {

@@ -34,5 +34,8 @@ echo "redis installed"
 
 # systemd services setup
 
-./copy.sh
 ./systemd.sh
+./copy.sh
+
+systemctl daemon-reload
+echo "services enabled"

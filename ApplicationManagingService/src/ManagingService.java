@@ -1,7 +1,7 @@
 import logger.ManagingServiceLogger;
-import rabbitmq.MessageBusFactory;
-import rabbitmq.TextSynthesisBus;
-import rabbitmq.VoiceCommandBus;
+import message.bus.MessageBusFactory;
+import message.bus.TextSynthesisBus;
+import message.bus.VoiceCommandBus;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 

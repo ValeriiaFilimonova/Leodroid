@@ -1,4 +1,4 @@
-package rabbitmq;
+package message.bus;
 
 public class MessageBusFactory {
     public static VoiceCommandBus getVoiceCommandBus() {

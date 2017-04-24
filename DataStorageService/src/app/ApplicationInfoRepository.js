@@ -6,7 +6,7 @@ const BaseRepository = require('../base/BaseRepository');
 
 class ApplicationInfoRepository extends BaseRepository {
     getServiceName(appName) {
-        return this._redis.getAsync(this._getApplicationKey(appName))
+        return this.client.getAsync(this._getApplicationKey(appName))
             .then((name) => {
                 if (!name) {
                     throw new errors.NotFoundError(appName);

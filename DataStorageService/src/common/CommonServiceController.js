@@ -9,6 +9,7 @@ class CommonServiceController extends BaseController {
         this._requiredProperties = ['applicationName', 'commands'];
 
         this._router.get('/', this.getAllServices.bind(this));
+        this._router.get('/_commands', this.getAllCommands.bind(this));
         this._router.get('/:serviceName', this.getService.bind(this));
         this._router.put('/:serviceName', this.upsertService.bind(this));
         this._router.delete('/:serviceName', this.removeService.bind(this));
@@ -17,6 +18,11 @@ class CommonServiceController extends BaseController {
     getAllServices(req, res) {
         return this._repository.getAllServices()
             .then((info) => this._respond(res, info));
+    }
+
+    getAllCommands(req, res, next) {
+        return this._repository.getAllCommands()
+            .then((commands) => this._respond(res, commands));
     }
 
     getService(req, res) {
@@ -28,10 +34,9 @@ class CommonServiceController extends BaseController {
     upsertService(req, res) {
         const body = this.guard(req.body);
         const serviceModel = {
+            identifier: body.identifier,
             applicationName: body.applicationName,
-            mainClass: body.mainClass,
-            dependencies: body.dependencies,
-            logFile: body.logFile,
+            description: body.description,
             commands: body.commands,
         };
 

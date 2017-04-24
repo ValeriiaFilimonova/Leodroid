@@ -19,9 +19,9 @@ class ServiceStatusRepository extends BaseRepository {
 
     getStatuses() {
         return bluebird.all([
-            this._redis.sinterAsync(this._allServicesKey, this._runningStatusKey),
-            this._redis.sinterAsync(this._allServicesKey, this._failedStatusKey),
-            this._redis.sdiffAsync(this._allServicesKey, this._runningStatusKey, this._failedStatusKey),
+            this.client.sinterAsync(this._allServicesKey, this._runningStatusKey),
+            this.client.sinterAsync(this._allServicesKey, this._failedStatusKey),
+            this.client.sdiffAsync(this._allServicesKey, this._runningStatusKey, this._failedStatusKey),
         ]).then((results) => {
             const statuses = {};
 
@@ -39,15 +39,15 @@ class ServiceStatusRepository extends BaseRepository {
             _(data).forEach((status, serviceName) => {
                 switch (status) {
                     case ServiceStatusRepository.STATUS.RUNNING:
-                        promises.push(this._redis.saddAsync(this._runningStatusKey, serviceName));
-                        promises.push(this._redis.sremAsync(this._failedStatusKey, serviceName));
+                        promises.push(this.client.saddAsync(this._runningStatusKey, serviceName));
+                        promises.push(this.client.sremAsync(this._failedStatusKey, serviceName));
                         break;
                     case ServiceStatusRepository.STATUS.STOPPED:
-                        promises.push(this._redis.sremAsync(this._runningStatusKey, serviceName));
+                        promises.push(this.client.sremAsync(this._runningStatusKey, serviceName));
                         break;
                     case ServiceStatusRepository.STATUS.FAILED:
-                        promises.push(this._redis.sremAsync(this._runningStatusKey, serviceName));
-                        promises.push(this._redis.saddAsync(this._failedStatusKey, serviceName));
+                        promises.push(this.client.sremAsync(this._runningStatusKey, serviceName));
+                        promises.push(this.client.saddAsync(this._failedStatusKey, serviceName));
                         break;
                 }
             });

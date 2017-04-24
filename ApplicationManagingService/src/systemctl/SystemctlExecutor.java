@@ -13,6 +13,9 @@ class SystemctlExecutor {
         if ("enabled".equals(result)) {
             return true;
         }
+        if ("static".equals(result)) {
+            return true;
+        }
         if ("disabled".equals(result)) {
             return false;
         }
@@ -47,6 +50,9 @@ class SystemctlExecutor {
             return true;
         }
         if ("inactive".equals(result)) {
+            return false;
+        }
+        if ("failed".equals(result)) {
             return false;
         }
         throw new SystemctlException(command, instruction.getFullOutput());
