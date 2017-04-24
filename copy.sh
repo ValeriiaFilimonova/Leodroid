@@ -5,9 +5,9 @@ source env.opts
 
 # copy folders with dependencies and services
 
-if [ -d "$DEPENDENCIES_PATH" ];
+if [ -d "$DEPS_PATH" ];
 then
-    rm -r $DEPENDENCIES_PATH
+    rm -r $DEPS_PATH
 fi
 if [ -d "$SERVICES_PATH" ];
 then

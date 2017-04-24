@@ -12,14 +12,15 @@ class GrammarManager {
         this._grammarPath = path;
         this._excludedAppNames = ["application-managing"];
         this._writeFile = bluebird.promisify(fs.writeFile);
+    }
+
+    generateGrammar(commands) {
         this._grammar = jspeech('grammar', {
             version: 'V1.0',
             lang: 'en',
             encoding: 'utf-8',
         });
-    }
 
-    generateGrammar(commands) {
         _(commands).forOwn((command) => {
             this._generateParams(command);
             this._generateRules(command);

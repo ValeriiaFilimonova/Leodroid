@@ -52,6 +52,9 @@ class SystemctlExecutor {
         if ("inactive".equals(result)) {
             return false;
         }
+        if ("failed".equals(result)) {
+            return false;
+        }
         throw new SystemctlException(command, instruction.getFullOutput());
     }
 
