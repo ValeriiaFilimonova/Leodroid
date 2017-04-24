@@ -1,7 +1,7 @@
 'use strict';
 
 const terminationHandler = function () {
-    console.info("Server stopped");
+    console.info("Service stopped");
     process.exit(0);
 };
 
