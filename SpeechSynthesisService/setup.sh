@@ -1,8 +1,5 @@
 #!bin/bash
 
-# POCO install
-apt-get install -y libpoco-dev
-
 # AMQP-CPP install
 git clone https://github.com/CopernicaMarketingSoftware/AMQP-CPP
 cd AMQP-CPP

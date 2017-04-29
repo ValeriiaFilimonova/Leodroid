@@ -3,6 +3,6 @@
 cd $(dirname $0)
 source ../env.opts
 
-#npm install nexe -g
-
-nexe -i ./src/DataService.js -o ./$EXE_PATH/$DATA_STORAGE_NAME/$DATA_STORAGE_NAME
+enclose ./src/DataService.js
+cp src/DataService ./$EXE_PATH/$DATA_STORAGE_NAME/$DATA_STORAGE_NAME
+rm src/DataService
