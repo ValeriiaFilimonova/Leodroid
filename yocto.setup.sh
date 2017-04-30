@@ -51,6 +51,13 @@ rm -r AMQP-CPP
 
 echo "AMQP installed"
 
+# Sound configuring
+FILE_PATH="/usr/lib/jvm/java-8-openjdk/jre/lib/sound.properties"
+echo javax.sound.sampled.Clip=com.sun.media.sound.DirectAudioDeviceProvider >> $FILE_PATH
+echo javax.sound.sampled.Port=com.sun.media.sound.PortMixerProvider >> $FILE_PATH
+echo javax.sound.sampled.SourceDataLine=com.sun.media.sound.DirectAudioDeviceProvider >> $FILE_PATH
+echo javax.sound.sampled.TargetDataLine=com.sun.media.sound.DirectAudioDeviceProvider >> $FILE_PATH
+
 # Leodroid Project
 cd /home/root
 git clone https://github.com/ValeriiaFilimonova/Leodroid -b prod
