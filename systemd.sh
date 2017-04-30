@@ -1,7 +1,8 @@
 #!/bin/bash
 
 cd $(dirname $0)
-source env.opts
+source ./env.opts
+mkdir -p units
 
 SYSTEMD_FILE="systemd.sh"
 DIRECTORIES=($SPEECH_RECOGNITION_NAME $SPEECH_SYNTHESIS_NAME $DATA_STORAGE_NAME $APPLICATION_MANAGING_NAME $FAILURE_MONITORING_NAME $MAINTENANCE_NAME)

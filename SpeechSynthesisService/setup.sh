@@ -1,10 +1,9 @@
 #!bin/bash
 
 # AMQP-CPP install
-git clone https://github.com/CopernicaMarketingSoftware/AMQP-CPP
+git clone -b v2.6.0 https://github.com/CopernicaMarketingSoftware/AMQP-CPP
 cd AMQP-CPP
-make pure
-make install
+make pure && make install
 cd ../
 rm -r AMQP-CPP
 
