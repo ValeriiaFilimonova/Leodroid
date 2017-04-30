@@ -12,7 +12,7 @@ BIN_PATH="temp"
 
 mkdir $BIN_PATH
 
-javac -cp $LIBRARIES -d $BIN_PATH *.java
+javac -cp $LIBRARIES -d $BIN_PATH message/bus/*.java
 jar cvf $LIB_PATH/$JAR_NAME.jar -C $BIN_PATH/ .
 
 rm -r $BIN_PATH
