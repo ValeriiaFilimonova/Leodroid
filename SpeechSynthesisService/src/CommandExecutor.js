@@ -1,5 +1,6 @@
 'use strict';
 
+const poem = require('./VincentPoem.json');
 const synthesiser = require('./EspeakWrapper');
 const logger = require('log4js').getLogger('CommandExecutor');
 
@@ -16,7 +17,7 @@ class CommandExecutor {
     }
 
     _tellThePoem() {
-        // TODO implement Vincent's poem
+        poem.forEach((piece) => this._speak(piece.text, piece.options));
     }
 
     execute(command) {

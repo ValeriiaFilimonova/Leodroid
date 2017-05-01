@@ -5,6 +5,7 @@
     "start": "node src/SynthesisService.js"
   },
   "dependencies": {
+    "axios": "0.16.1",
     "lodash": "4.17.4",
     "log4js": "1.1.1",
     "redis": "2.7.1"

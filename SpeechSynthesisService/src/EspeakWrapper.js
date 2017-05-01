@@ -72,6 +72,10 @@ class EspeakWrapper {
     }
 
     _getVoice(voiceOptions) {
+        if (!voiceOptions) {
+            return '';
+        }
+
         const voices = voiceOptions.language && this._exec(`espeak --voices=${voiceOptions.language}`);
         const voiceOpts = this._getVoiceOptions(voiceOptions);
 
@@ -87,10 +91,6 @@ class EspeakWrapper {
     }
 
     _getVoiceOptions(voiceOptions) {
-        if (!voiceOptions) {
-            return '';
-        }
-
         if (voiceOptions.whisper) {
             switch (voiceOptions.gender) {
                 case 'female':

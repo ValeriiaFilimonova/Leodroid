@@ -1,0 +1,93 @@
+[
+  {
+    "text": "Vincent Malloy is seven years old. He's always polite and does what he's told. For a boy his age, he's Considerate and Nice, But he wants to be just like Vincent Price.",
+    "options": {
+      "speed": 140
+    }
+  },
+  {
+    "text": "He doesn't mind living with his sister, dog and cats, Though he’d rather share a home with spiders and bats, There he could reflect on the horrors he's invented.",
+    "options": {
+      "speed": 180
+    }
+  },
+  {
+    "text": "And wander dark hallways, alone and tormented",
+    "options": {
+      "speed": 130
+    }
+  },
+  {
+    "text": "His thoughts though, aren't only of ghoulish crimes. He likes to paint and read, to pass some of the times. While other kids read books like, Go Jane Go! Vincent's favourite author is",
+    "options": {
+      "speed": 180
+    }
+  },
+  {
+    "text": "Edgar Allen Poe",
+    "options": {
+      "speed": 120,
+      "volume": 120
+    }
+  },
+  {
+    "text": "One night, while reading a gruesome tale He read a passage that made him turn pale. Such horrible news he could not survive, For his beautiful wife had been buried alive!",
+    "options": {
+      "speed": 180
+    }
+  },
+  {
+    "text": "While alone and insane encased in his tomb, Vincent's mother burst suddenly into the room. She said"
+  },
+  {
+    "text": "If you want to, you can go out and play. It's sunny outside, and a beautiful day.",
+    "options": {
+      "voice": {
+        "gender": "female",
+        "index": 4
+      },
+      "speed": 150
+    }
+  },
+  {
+    "text": "Vincent tried to talk, but he just couldn't speak. The years of isolation had made him quite weak. So he took out some paper and scrawled with a pen."
+  },
+  {
+    "text": "I am possessed by this house, and can never leave it again",
+    "options": {
+      "voice": {
+        "whisper": true
+      },
+      "speed": 140
+    }
+  },
+  {
+    "text": "His mother said"
+  },
+  {
+    "text": "You're not possessed, and you're not almost dead. These games that you play are, all in your head. You're not Vincent Price, you're Vincent Malloy. You're not tormented or insane, you're just A young boy",
+    "options": {
+      "voice": {
+        "gender": "female",
+        "index": 4
+      }
+    }
+  },
+  {
+    "text": "Every horror in his life, that had crept through his dreams, swept his mad Laughter to terrified Screams! His voice was soft and very slow, as he quoted The Raven from Edgar Allen Poe",
+    "options": {
+      "capitals": 25
+    }
+  },
+  {
+    "text": "and my soul from out that shadow, that lies floating on the floor, shall be lifted? Nevermore…",
+    "options": {
+      "voice": {
+        "whisper": true
+      },
+      "volume": 150,
+      "capitals": 20,
+      "speed": 130
+    }
+  }
+]
