@@ -7,12 +7,12 @@ source ../env.opts
 
 SERVICE_NAME=$APPLICATION_MANAGING_NAME
 
-LIBRARIES="${LIB_PATH}/amqp-client-4.0.2.jar:${LIB_PATH}/slf4j-api-1.7.24.jar:${LIB_PATH}/slf4j-simple-1.7.24.jar:${LIB_PATH}/message-bus-1.0.0.jar"
+LIBRARIES="${LIB_PATH}/jedis-2.9.0.jar:${LIB_PATH}/commons-pool2-2.4.2.jar:${LIB_PATH}/slf4j-api-1.7.24.jar:${LIB_PATH}/slf4j-simple-1.7.24.jar:${LIB_PATH}/droid-api-1.0.0.jar"
 BIN_PATH="$BIN_PATH/$SERVICE_NAME"
 
 if [ ! -d "$BIN_PATH" ]
 then
-    mkdir $BIN_PATH
+    mkdir -p $BIN_PATH
 fi
 
 javac -cp $LIBRARIES:$LIB_PATH/$SERVICE_NAME/* -d $BIN_PATH src/*/*.java src/*.java

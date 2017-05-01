@@ -1,15 +1,12 @@
+import droid.api.Droid;
 import logger.ManagingServiceLogger;
-import message.bus.MessageBusFactory;
-import message.bus.TextSynthesisBus;
-import message.bus.VoiceCommandBus;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 public class ManagingService implements SignalHandler {
     private ManagingServiceLogger logger = ManagingServiceLogger.getInstance(ManagingService.class);
 
-    private VoiceCommandBus commandBus = MessageBusFactory.getVoiceCommandBus();
-    private TextSynthesisBus synthesisBus = MessageBusFactory.getTextSynthesisBus();
+    private Droid droid = Droid.getInstance();
 
     private boolean tryToExecute(Command command, VoiceMessage message) {
         if (message.startsWith(command)) {
@@ -30,8 +27,8 @@ public class ManagingService implements SignalHandler {
                 logger.logRuntimeException(ex);
             }
 
-            synthesisBus.sendText(answer);
-            logger.logMessage("Oucoming message: " + answer);
+            droid.say(answer);
+            logger.logMessage("Outcoming message: " + answer);
             return true;
         }
 
@@ -40,7 +37,7 @@ public class ManagingService implements SignalHandler {
 
     void start() {
         logger.logMessage("Service started");
-        commandBus.setConsumer((message) -> {
+        droid.listen((message) -> {
             VoiceMessage voiceMessage = new VoiceMessage(message);
 
             if (tryToExecute(Command.START_APPLICATION, voiceMessage)) {
@@ -53,8 +50,7 @@ public class ManagingService implements SignalHandler {
     }
 
     @Override public void handle(Signal signal) {
-        commandBus.closeConnection();
-        synthesisBus.closeConnection();
+        droid.destroy();
         logger.logMessage("Service stopped");
     }
 
