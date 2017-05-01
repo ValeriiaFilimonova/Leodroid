@@ -1,0 +1,12 @@
+{
+  "name": "speech-synthesis-service",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/SynthesisService.js"
+  },
+  "dependencies": {
+    "lodash": "4.17.4",
+    "log4js": "1.1.1",
+    "redis": "2.7.1"
+  }
+}
