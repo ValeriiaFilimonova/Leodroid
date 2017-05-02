@@ -32,6 +32,10 @@ public class Droid {
         speechQueue = pool.getResource();
     }
 
+    public void putCommand(String command) {
+        commandsQueue.publish(COMMANDS_QUEUE, command);
+    }
+
     public void say(String text) {
         speechQueue.publish(SPEECH_QUEUE, text);
     }

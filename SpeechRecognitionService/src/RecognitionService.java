@@ -1,3 +1,4 @@
+import droid.api.Droid;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
@@ -19,17 +20,17 @@ public class RecognitionService {
 
     private static class TerminationSignalHandler implements SignalHandler {
         private LiveSpeechRecognizer recognizer;
-        private MessageBus bus;
+        private Droid droid;
 
-        private TerminationSignalHandler(LiveSpeechRecognizer recognizer, MessageBus bus) {
+        private TerminationSignalHandler(LiveSpeechRecognizer recognizer, Droid droid) {
             this.recognizer = recognizer;
-            this.bus = bus;
+            this.droid = droid;
         }
 
         @Override public void handle(Signal signal) {
             try {
-                if (bus != null) {
-                    bus.closeConnection();
+                if (droid != null) {
+                    droid.destroy();
                 }
 
                 if (recognizer != null) {
@@ -45,29 +46,34 @@ public class RecognitionService {
             }
         }
 
-        public static void registerHandlers(LiveSpeechRecognizer recognizer, MessageBus bus) {
-            TerminationSignalHandler handler = new TerminationSignalHandler(recognizer, bus);
+        public static void registerHandlers(LiveSpeechRecognizer recognizer, Droid droid) {
+            TerminationSignalHandler handler = new TerminationSignalHandler(recognizer, droid);
             Signal.handle(new Signal("TERM"), handler);
             Signal.handle(new Signal("ABRT"), handler);
             Signal.handle(new Signal("INT"), handler);
         }
     }
 
+    private static String UNKNOWN_TOKEN = "<unk>";
+
     public static void main(String[] args) {
         try {
             Configuration configuration = SphinxConfigurationFactory.getConfiguration();
 
-            MessageBus messageBus = new MessageBus();
+            Droid droid = Droid.getInstance();
             LiveSpeechRecognizer recognizer = new LiveSpeechRecognizer(configuration);
-            TerminationSignalHandler.registerHandlers(recognizer, messageBus);
+            TerminationSignalHandler.registerHandlers(recognizer, droid);
 
             recognizer.startRecognition(false);
 
             while (true) {
                 SpeechResult result = recognizer.getResult();
                 String message = result.getHypothesis();
-                messageBus.sendMessage(message);
-                logger.info("Outcoming message: " + message);
+
+                if (!message.equals(UNKNOWN_TOKEN)) {
+                    droid.putCommand(message);
+                    logger.info("Outcoming message: " + message);
+                }
             }
         }
         catch (IOException ex) {
