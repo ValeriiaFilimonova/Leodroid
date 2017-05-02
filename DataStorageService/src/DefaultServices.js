@@ -32,6 +32,18 @@ module.exports = [
     {
         applicationName: 'Droid Speech Synthesis Service',
         serviceName: 'speech-synthesis',
-        description: 'C++ Espeak Based Speech Synthesis Service'
+        description: 'NodeJS Espeak Based Speech Synthesis Service',
+        commands: {
+            rules: {
+                readPoem: {
+                    rule: 'Read me the poem',
+                    description: 'Reads short version of the poem by Vincent Price'
+                },
+                sayName: {
+                    rule: 'What is your name',
+                    description: 'Tells its name'
+                }
+            },
+        }
     }
 ];

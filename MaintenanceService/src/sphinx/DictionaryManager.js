@@ -11,7 +11,7 @@ class DictionaryManager {
         this._dictionaryPath = dictionaryPath;
         this._fullDictionaryPath = fullDictionaryPath;
 
-        this._excludedServiceNames = ["application-managing"];
+        this._excludedServiceNames = ["application-managing", "speech-synthesis"];
 
         this.exec = bluebird.promisify(childProcess.exec);
     }

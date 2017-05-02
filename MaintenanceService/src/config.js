@@ -1,6 +1,6 @@
 'use strict';
 
-const servicesPath = '/usr/share/droid-system';
+const servicesPath = process.env.EXE_DIRECTORY || '/usr/share/droid-system';
 
 module.exports = {
     path: {
@@ -8,8 +8,8 @@ module.exports = {
             models: process.env.MODELS_DIRECTORY || servicesPath + '/models/en',
             temporary: process.env.TEMP_DIRECTORY || servicesPath + '/temp',
             services: servicesPath,
-            libraries: '/usr/lib/droid-system',
-            systemd: '/etc/systemd/system',
+            libraries: process.env.LIB_DIRECTORY || '/usr/lib/droid-system',
+            systemd: process.env.UNITS_DIRECTORY || '/etc/systemd/system',
         },
         file: {
             fullDictionary: 'dictionary.dict.full',

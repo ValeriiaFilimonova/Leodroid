@@ -16,15 +16,15 @@ class CommandExecutor {
         this._speak("My name is Leo");
     }
 
-    _tellThePoem() {
+    _readThePoem() {
         poem.forEach((piece) => this._speak(piece.text, piece.options));
     }
 
     execute(command) {
         switch (command) {
-            case 'tell me the poem': {
+            case 'read me the poem': {
                 this._log(command);
-                this._tellThePoem();
+                this._readThePoem();
                 break;
             }
             case 'what is your name': {
