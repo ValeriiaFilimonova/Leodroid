@@ -6,7 +6,6 @@ source ../env.opts
 DATA_STORAGE_UNIT_FILE="
 [Unit]
 Description=NodeJS Redis Based Data Storage Service
-Requires=redis-server.service
 
 [Service]
 Type=simple

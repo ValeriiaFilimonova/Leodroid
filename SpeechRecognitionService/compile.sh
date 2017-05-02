@@ -3,8 +3,6 @@
 cd $(dirname $0)
 source ../env.opts
 
-# Compiling jar
-
 SERVICE_NAME=$SPEECH_RECOGNITION_NAME
 
 LIBRARIES="${LIB_PATH}/jedis-2.9.0.jar:${LIB_PATH}/commons-pool2-2.4.2.jar:${LIB_PATH}/droid-api-1.0.0.jar"

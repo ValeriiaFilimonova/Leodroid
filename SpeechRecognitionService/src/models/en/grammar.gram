@@ -5,3 +5,4 @@ public <startApp> = open the app <appName>;
 public <stopApp> = close the app <appName>;
 public <readPoem> = read me the poem;
 public <sayName> = what is your name;
+<appName> = " ";
