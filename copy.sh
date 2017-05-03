@@ -3,7 +3,7 @@
 cd $(dirname $0)
 source ./env.opts
 
-# copy folders with dependencies and services
+echo -e "-----STARTED COPYING FILES-----\n"
 
 if [ -d "$DEPS_PATH" ];
 then
@@ -19,12 +19,8 @@ else
     mkdir -p $SERVICES_PATH
 fi
 
-if [ -d "$MODELS_PATH" ];
-then
-    rm -r $MODELS_PATH
-else
-    mkdir -p $MODELS_PATH
-fi
+rm -rf $MODELS_PATH
+mkdir -p $MODELS_PATH
 
 if [ ! -d "$SYSTEMD_PATH" ];
 then
@@ -35,6 +31,6 @@ cp -r ./lib $DEPS_PATH
 cp -r ./exe $SERVICES_PATH
 cp -r ./units/* $SYSTEMD_PATH
 cp -r ./MonitoringService/src/*.sh $SERVICES_PATH
-cp -r ./SpeechRecognitionService/src/models $MODELS_PATH
+cp -r ./SpeechRecognitionService/src/models/* $MODELS_PATH
 
-echo "files copied"
+echo -e "-----FILES COPIED-----\n"

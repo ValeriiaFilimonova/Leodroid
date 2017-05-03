@@ -4,13 +4,15 @@ cd $(dirname $0)
 source ./env.opts
 mkdir -p units
 
+echo -e "-----STARTED CREATING UNIT FILES-----\n"
+
 SYSTEMD_FILE="systemd.sh"
 DIRECTORIES=($SPEECH_RECOGNITION_NAME $SPEECH_SYNTHESIS_NAME $DATA_STORAGE_NAME $APPLICATION_MANAGING_NAME $FAILURE_MONITORING_NAME $MAINTENANCE_NAME)
 
 for directory in "${DIRECTORIES[@]}"
 do
     /bin/bash $directory/$SYSTEMD_FILE
-    echo -e "\t$directory -> done"
+    echo -e "\t$directory -> DONE"
 done
 
 #Target to unite all services
@@ -23,4 +25,4 @@ Requires=$DATA_STORAGE_NAME $SPEECH_RECOGNITION_SERVICE_NAME $SPEECH_SYNTHESIS_S
 "
 echo -e "$TARGET_UNIT_FILE" > units/droid-system.target
 
-echo "unit files created"
+echo -e "\n-----UNIT FILES CREATED-----\n"

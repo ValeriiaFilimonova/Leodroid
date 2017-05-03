@@ -2,7 +2,7 @@
 
 UNIT_NAME="$1"
 STORAGE_HOST="http://localhost:8888/storage/statuses"
-MONITORING_FILE="/usr/share/droid-system/stopped-services.txt"
+MONITORING_FILE="/home/root/exe/stopped-services.txt"
 
 if [ ! -f "$MONITORING_FILE" ]
 then

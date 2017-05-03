@@ -2,6 +2,7 @@
   "applicationName": "Weather",
   "description": "Weather Service",
   "type": "Java",
+  "executable": "WeatherService.jar",
   "mainClass": "WeatherService",
   "dependencies": [
     "owm-japis-2.5.0.3.jar"
@@ -15,6 +16,10 @@
       "humInTown": {
         "rule": "Humidity in <city>",
         "description": "Says the current humidity in the given town"
+      },
+      "pressInTown": {
+        "rule": "Pressure in <city>",
+        "description": "Says the current pressure in the given town"
       }
     },
     "params": {
@@ -27,7 +32,7 @@
       ]
     },
     "dictionary": {
-      "Ivanovo": "IH V AH N AA V OW"
+      "ivanovo": "IH V AH N AA V OW"
     }
   }
 }
