@@ -21,17 +21,18 @@ echo -e "\tAlsa configured"
 
 # Java and NPM configuration
 ln -s /usr/lib/jvm/java-8-openjdk/bin/jar /usr/bin/jar
-npm install -g enclose
+cd /home/root && npm install enclose
+ln -s /home/root/node_modules/enclose/bin/enclose.js /usr/bin/enclose
 echo -e "\tCompilers installed"
 
 # Leodroid Project
-mkdir -p /home/root/src
-cd /home/root/src
-git clone https://github.com/ValeriiaFilimonova/Leodroid -b prod
+git clone https://github.com/ValeriiaFilimonova/Leodroid -b dev-2.0
+#wget https://github.com/ValeriiaFilimonova/Leodroid/archive/dev-2.0.zip
+mv /home/root/Leodroid /home/root/src
 echo -e "\tSources copies"
 
 # systemd services setup
-cd Leodroid
+cd src
 sh compile.sh
 sh systemd.sh
 sh copy.sh

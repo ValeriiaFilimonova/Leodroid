@@ -7,5 +7,5 @@ EXE_PATH="./$EXE_PATH/$SPEECH_SYNTHESIS_NAME"
 
 npm install
 enclose ./src/SynthesisService.js
-cp src/SynthesisService $EXE_PATH/$SPEECH_SYNTHESIS_NAME
-rm src/SynthesisService
+cp ./src/SynthesisService $EXE_PATH/$SPEECH_SYNTHESIS_NAME
+rm ./src/SynthesisService

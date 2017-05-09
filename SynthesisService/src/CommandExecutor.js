@@ -22,11 +22,12 @@ class CommandExecutor {
 
     execute(command) {
         switch (command) {
-            case 'read me the poem': {
-                this._log(command);
-                this._readThePoem();
-                break;
-            }
+            // TODO make it really short
+            // case 'read me the poem': {
+            //     this._log(command);
+            //     this._readThePoem();
+            //     break;
+            // }
             case 'what is your name': {
                 this._log(command);
                 this._tellTheName();

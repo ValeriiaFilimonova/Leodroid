@@ -5,5 +5,5 @@ source ../env.opts
 
 npm install
 enclose ./src/DataService.js
-cp src/DataService ./$EXE_PATH/$DATA_STORAGE_NAME/$DATA_STORAGE_NAME
-rm src/DataService
+cp ./src/DataService ./$EXE_PATH/$DATA_STORAGE_NAME/$DATA_STORAGE_NAME
+rm ./src/DataService
