@@ -65,7 +65,7 @@ class GrammarManager {
         const paramsInUse = [];
         let param;
 
-        while ((param = regexp.exec(rule)) != null) {
+        while ((param = regexp.exec(rule)) !== null) {
             const paramStr = param[0];
             const paramKey = paramStr.substring(1, paramStr.length - 1);
 

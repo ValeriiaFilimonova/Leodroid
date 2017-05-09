@@ -9,6 +9,8 @@ echo "src/gz core2-32 http://repo.opkg.net/edison/repo/core2-32" >> /etc/opkg/ba
 opkg update #10Mb
 echo -e "\tOPKG updated"
 
+opkg install upm #11Mb
+
 # Espeak setup
 opkg install espeak #5Mb
 echo -e "\teSpeak installed"
