@@ -11,7 +11,7 @@ class FileSystemManager {
 
     prepareTempDirectory() {
         return this.exec(`mkdir -p ${this.tempDir}`)
-            .then(() => this.exec(`cp ${this.modelsDir}/${this.dictionaryFile} ${this.tempDir}`));
+            .then(() => this.exec(`cp ${this.modelsDir}/${this.dictionaryFile} ${this.tempDir}`))
     }
 
     removeTempDirectory() {
@@ -23,40 +23,25 @@ class FileSystemManager {
     }
 
     copyFiles(service) {
-        return this._copyDictionaryAndGrammar()
-            // copy unit file
-            .then(() => this.exec(`cp ${this.tempDir}/${service.serviceName}.service ${this.systemdDir}`))
-            // copy executable file
+        return this._moveDictionaryAndGrammar()
+            .then(() => this.exec(`mv ${this.tempDir}/${service.serviceName}.service ${this.systemdDir}`)) // copy unit file
             .then(() => {
                 return bluebird.all([
                     this.exec(`mkdir -p ${this.servicesDir}/${service.directoryName}`),
-                    this.exec(`cp ${this.tempDir}/${service.executable} ${this.servicesDir}/${service.directoryName}/`),
+                    this.exec(`cp -r ${this.tempDir}/* ${this.servicesDir}/${service.directoryName}/`), // copy source files
                 ]);
-            })
-            // copy folder with libraries (for java service)
-            .then(() => {
-                if (service.dependencies) {
-                    return bluebird.all([
-                        this.exec(`mkdir -p ${this.libsDir}/${service.directoryName}`),
-                        this.exec(`cp ${this.tempDir}/dependencies/* ${this.libsDir}/${service.directoryName}`),
-                    ]);
-                }
             });
     }
 
     removeFiles(service) {
-        return this._copyDictionaryAndGrammar()
-            // remove unit file
-            .then(() => this.exec(`rm -f ${this.systemdDir}/${service.serviceName}.service`))
-            // remove executable file
-            .then(() => this.exec(`rm -r ${this.servicesDir}/${service.directoryName}`))
-            // remove folder with libraries (for java service)
-            .then(() => this.exec(`rm -rf ${this.libsDir}/${service.directoryName}`));
+        return this._moveDictionaryAndGrammar()
+            .then(() => this.exec(`rm -f ${this.systemdDir}/${service.serviceName}.service`)) // remove unit file
+            .then(() => this.exec(`rm -r ${this.servicesDir}/${service.directoryName}`)); // remove source files
     }
 
-    _copyDictionaryAndGrammar() {
-        return this.exec(`cp -f ${this.tempDir}/${this.dictionaryFile} ${this.modelsDir}/${this.dictionaryFile}`)
-            .then(() => this.exec(`cp ${this.tempDir}/${this.grammarFile} ${this.modelsDir}/${this.grammarFile}`))
+    _moveDictionaryAndGrammar() {
+        return this.exec(`mv ${this.tempDir}/${this.dictionaryFile} ${this.modelsDir}/${this.dictionaryFile}`)
+            .then(() => this.exec(`mv ${this.tempDir}/${this.grammarFile} ${this.modelsDir}/${this.grammarFile}`))
     }
 
     get tempDir() {

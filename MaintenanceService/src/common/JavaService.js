@@ -26,7 +26,7 @@ class JavaService extends Service {
         let classPath = `-cp ${this._librariesPath}/*`;
 
         if (!_.isEmpty(this.dependencies)) {
-            classPath += `:${this._librariesPath}/${this.directoryName}/*`;
+            classPath += `:${this._servicesPath}/${this.directoryName}/dependencies/*`;
         }
 
         classPath += `:${this._servicesPath}/${this.directoryName}/${this.executable}`;
