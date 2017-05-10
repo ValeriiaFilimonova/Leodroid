@@ -12,10 +12,10 @@ const SystemctlExecutor = require('./helpers/SystemctlExecutor');
 const DataStorageClient = require('./helpers/DataStorageClient');
 
 class ServiceRegister {
-    static add(url) {
+    static add(options) {
         let service;
         return FileManager.prepareTempDirectory()
-            .then(() => PackageHelper.downloadPackageAndGetConfig(url))
+            .then(() => PackageHelper.downloadPackageAndGetConfig(options))
             .then((config) => service = ServiceBuilder.buildFrom(config))
             .then(() => DataStorageClient.checkServiceExists(service.serviceName))
             .then((exists) => {

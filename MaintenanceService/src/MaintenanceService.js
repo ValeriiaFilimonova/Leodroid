@@ -15,19 +15,21 @@ app.post('/', (req, res, next) => {
     console.info(`[${new Date()}]: POST`, req.body);
 
     const url = _.get(req, 'body.url');
-    const name = _.get(req, 'body.application');
+    const name = _.get(req, 'body.name');
 
-    if (url) {
-        ServiceRegister.add(url)
+    if (url || name) {
+        ServiceRegister.add({ url, name })
             .then(() => res.sendStatus(201))
             .catch((err) => next(err));
     }
+});
 
-    if (name) {
-        ServiceRegister.remove(name)
-            .then(() => res.sendStatus(204))
-            .catch((err) => next(err));
-    }
+app.delete('/:name', (req, res, next) => {
+    console.info(`[${new Date()}]: DELETE`, req.params);
+
+    ServiceRegister.remove(req.params.name)
+        .then(() => res.sendStatus(204))
+        .catch((err) => next(err));
 });
 
 app.use((err, req, res, next) => {

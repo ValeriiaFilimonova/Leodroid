@@ -18,5 +18,8 @@ module.exports = {
     },
     dataStorage: {
         host: 'http://localhost:8888',
+        dropbox: {
+            accessToken: ''
+        }
     }
 };

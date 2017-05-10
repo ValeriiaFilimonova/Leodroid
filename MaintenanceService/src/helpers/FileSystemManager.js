@@ -11,7 +11,7 @@ class FileSystemManager {
 
     prepareTempDirectory() {
         return this.exec(`mkdir -p ${this.tempDir}`)
-            .then(() => this.exec(`cp ${this.modelsDir}/${this.dictionaryFile} ${this.tempDir}`))
+            .then(() => this.exec(`cp ${this.modelsDir}/${this.dictionaryFile} ${this.tempDir}`));
     }
 
     removeTempDirectory() {
