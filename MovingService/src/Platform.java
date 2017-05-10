@@ -9,7 +9,7 @@ public class Platform {
     private static final int SPEED = 5;
 
     // Number of steps equal to one full revolution
-    private static final int FIXED_NUMBER_OF_STEPS = 1024;
+    private static final int FIXED_NUMBER_OF_STEPS = 256;
 
     private upm_uln200xa.ULN200XA motor = new upm_uln200xa.ULN200XA(
             STEPS_PER_REVOLUTION,
@@ -19,7 +19,7 @@ public class Platform {
             Pins.MOTORS_I4.getPin()
     );
 
-    private RotationDirection rotationDirection = RotationDirection.ClockWise;
+    private RotationDirection rotationDirection = RotationDirection.ContraClockWise;
 
     private Thread thread = null;
 

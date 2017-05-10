@@ -12,26 +12,26 @@ public class MovingService implements SignalHandler {
     private void start() {
         logger.info("Service started");
         droid.listen((message) -> {
-
             try {
                 switch (message) {
                     case "move": {
                         platform.move();
-                        logger.info("Got message:", message);
+                        logger.info(String.format("Got message: %s", message));
                         break;
                     }
                     case "change direction": {
                         platform.changeDirection();
-                        logger.info("Got message:", message);
+                        logger.info(String.format("Got message: %s", message));
                         break;
                     }
                     case "stop": {
                         platform.stop();
-                        logger.info("Got message:", message);
+                        logger.info(String.format("Got message: %s", message));
                         break;
                     }
                 }
-            } catch (InterruptedException ex) {
+            }
+            catch (InterruptedException ex) {
                 logger.error("Failed to stop thread", ex);
             }
         });
