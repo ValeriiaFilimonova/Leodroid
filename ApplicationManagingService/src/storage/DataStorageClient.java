@@ -1,5 +1,7 @@
 package storage;
 
+import com.codesnippets4all.json.parsers.JSONParser;
+import com.codesnippets4all.json.parsers.JsonParserFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -14,11 +16,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 public class DataStorageClient {
     private String PROTOCOL = "http";
     private String HOST = "localhost";
     private int PORT = 8888;
+
+    private JsonParserFactory factory = JsonParserFactory.getInstance();
 
     public String getServiceName(String applicationName) {
         try {
@@ -36,6 +41,24 @@ public class DataStorageClient {
 
             reader.close();
             return serviceName;
+        }
+        catch (IOException | URISyntaxException ex) {
+            throw new DataStorageClientException(ex);
+        }
+    }
+
+    public Map<String, String> getServiceStatuses() {
+        try {
+            URI uri = new URI(PROTOCOL, null, HOST, PORT, "/storage/statuses/", null, null);
+            HttpGet request = new HttpGet(uri);
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(request);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            String statuses = reader.readLine();
+            JSONParser parser = factory.newJsonParser();
+
+            return parser.parseJson(statuses);
         }
         catch (IOException | URISyntaxException ex) {
             throw new DataStorageClientException(ex);

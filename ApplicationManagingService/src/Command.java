@@ -1,4 +1,5 @@
 import systemctl.ServiceManager;
+import systemctl.Status;
 
 import java.util.function.Function;
 
@@ -7,18 +8,18 @@ public enum Command {
     STOP_APPLICATION("close the app", ServiceManager.getInstance()::stopService);
 
     private String stringValue;
-    private Function<String, ServiceManager.Status> instruction;
+    private Function<String, Status> instruction;
 
     public String getString() {
         return stringValue;
     }
 
     public CommandExecutionResult execute(String applicationName) {
-        ServiceManager.Status managerStatus = instruction.apply(applicationName);
+        Status managerStatus = instruction.apply(applicationName);
         return CommandExecutionResult.from(managerStatus, applicationName);
     }
 
-    Command(String stringValue, Function<String, ServiceManager.Status> instruction) {
+    Command(String stringValue, Function<String, Status> instruction) {
         this.stringValue = stringValue;
         this.instruction = instruction;
     }

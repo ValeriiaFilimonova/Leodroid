@@ -1,30 +1,14 @@
 package systemctl;
 
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import logger.ManagingServiceLogger;
 import storage.ApplicationNotFoundException;
 import storage.DataStorageClient;
 import storage.DataStorageClientException;
 
+import java.util.Map;
+
 public class ServiceManager {
-    public enum Status {
-        NOT_FOUND, ALREADY_STARTED, NOT_RUNNING,
-        FAILED_TO_START("failed"), FAILED_TO_STOP("failed"),
-        SUCCESSFULLY_STARTED("running"), SUCCESSFULLY_STOPPED("stopped");
-
-        private String statusString;
-
-        Status() {}
-
-        Status(String statusString) {
-            this.statusString = statusString;
-        }
-
-
-        @Override public String toString() {
-            return statusString;
-        }
-    }
-
     private static ServiceManager managerInstance;
 
     public static ServiceManager getInstance() {
@@ -50,6 +34,20 @@ public class ServiceManager {
         return status;
     }
 
+    private Status getAndUpdateServiceStatus(String name) {
+        try {
+            Thread.sleep(1000);
+            Map<String, String> statuses = dataStorageClient.getServiceStatuses();
+            String statusString = statuses.get(name);
+
+            return Status.getStatusByString(statusString);
+        }
+        catch (InterruptedException ex) {
+            logger.logRuntimeException(ex);
+            throw new UncheckedExecutionException(ex);
+        }
+    }
+
     public Status startService(String name) {
         try {
             String serviceName = getServiceName(name);
@@ -62,7 +60,7 @@ public class ServiceManager {
                 }
 
                 service.start();
-                return updateServiceStatus(serviceName, Status.SUCCESSFULLY_STARTED);
+                return getAndUpdateServiceStatus(serviceName);
             }
             catch (ServiceNotFoundException ex) {
                 logger.logRuntimeException(ex);
@@ -91,7 +89,7 @@ public class ServiceManager {
                 }
 
                 service.stop();
-                return updateServiceStatus(serviceName, Status.SUCCESSFULLY_STOPPED);
+                return getAndUpdateServiceStatus(serviceName);
             }
             catch (ServiceNotFoundException ex) {
                 logger.logRuntimeException(ex);

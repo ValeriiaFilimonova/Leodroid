@@ -17,17 +17,17 @@ public class ManagingService implements SignalHandler {
                 String applicationName = message.extractName(command);
                 CommandExecutionResult result = command.execute(applicationName);
                 answer = result.getMessage();
-
+                droid.say(answer);
             }
             catch (VoiceMessage.ExtractingNameException ex) {
                 answer = "Sorry, didn't recognize application name";
             }
             catch (Exception ex) {
                 answer = "Sorry, something went wrong";
+                droid.say(answer);
                 logger.logRuntimeException(ex);
             }
 
-            droid.say(answer);
             logger.logMessage("Outcoming message: " + answer);
             return true;
         }
