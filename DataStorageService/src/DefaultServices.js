@@ -45,5 +45,26 @@ module.exports = [
                 }
             },
         }
+    },
+    {
+        applicationName: 'Droid Adruino Moving Service',
+        serviceName: 'arduino-moving',
+        description: 'Java UPM Based Moving Service',
+        commands: {
+            rules: {
+                move: {
+                    rule: 'Move',
+                    description: 'Starts moving'
+                },
+                stop: {
+                    rule: 'Stop',
+                    description: 'Stops moving'
+                },
+                changeDirection: {
+                    rule: 'Change direction',
+                    description: 'Changes moving direction'
+                }
+            },
+        }
     }
 ];

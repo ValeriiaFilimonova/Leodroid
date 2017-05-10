@@ -29,6 +29,19 @@ public class Platform {
         return thread != null && thread.isAlive() && !thread.isInterrupted();
     }
 
+    private void setRotationDirection(RotationDirection rotationDirection) {
+        switch (rotationDirection) {
+            case ClockWise:
+                motor.setDirection(upm_uln200xa.ULN200XA_DIRECTION_T.ULN200XA_DIR_CW);
+                break;
+            case ContraClockWise:
+                motor.setDirection(upm_uln200xa.ULN200XA_DIRECTION_T.ULN200XA_DIR_CCW);
+                break;
+        }
+
+        this.rotationDirection = rotationDirection;
+    }
+
     private void startRotating() {
         if (!isRotating()) {
             thread = new Thread(() -> {
@@ -49,34 +62,25 @@ public class Platform {
         logger.info("stopped rotating");
     }
 
-    public void moveStraight() {
+    public void move() {
         if (isRotating()) {
             return;
         }
-
-        switch (rotationDirection) {
-            case ClockWise:
-                motor.setDirection(upm_uln200xa.ULN200XA_DIRECTION_T.ULN200XA_DIR_CW);
-                break;
-            case ContraClockWise:
-                motor.setDirection(upm_uln200xa.ULN200XA_DIRECTION_T.ULN200XA_DIR_CCW);
-                break;
-        }
-
+        setRotationDirection(rotationDirection);
         startRotating();
     }
 
-    public void moveBack() throws InterruptedException {
+    public void changeDirection() throws InterruptedException {
         switch (rotationDirection) {
             case ClockWise:
-                motor.setDirection(upm_uln200xa.ULN200XA_DIRECTION_T.ULN200XA_DIR_CCW);
+                setRotationDirection(RotationDirection.ContraClockWise);
                 break;
             case ContraClockWise:
-                motor.setDirection(upm_uln200xa.ULN200XA_DIRECTION_T.ULN200XA_DIR_CW);
+                setRotationDirection(RotationDirection.ClockWise);
                 break;
         }
 
-        logger.info("changed rotationDirection");
+        logger.info("changed rotation direction");
 
         if (!isRotating()) {
             startRotating();
