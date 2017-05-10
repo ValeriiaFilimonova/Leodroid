@@ -10,7 +10,7 @@ const errors = require('../Errors');
 class GrammarManager {
     constructor(path) {
         this._grammarPath = path;
-        this._excludedAppNames = ["application-managing", "speech-synthesis"];
+        this._excludedAppNames = ["application-managing", "speech-synthesis", "arduino-moving"];
         this._writeFile = bluebird.promisify(fs.writeFile);
     }
 
