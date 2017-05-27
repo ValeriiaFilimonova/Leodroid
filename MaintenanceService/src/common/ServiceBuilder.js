@@ -2,6 +2,7 @@
 
 const ExecutableService = require('./Service');
 const JavaService = require('./JavaService');
+const NodeService = require('./NodeService');
 
 class ServiceBuilder {
     static buildFrom(data) {
@@ -9,6 +10,8 @@ class ServiceBuilder {
         switch (type) {
             case 'java':
                 return new JavaService(data);
+            case 'nodejs':
+                return new NodeService(data);
             default:
                 return new ExecutableService(data);
         }

@@ -1,6 +1,7 @@
 'use strict';
 
 const errors = require('./Errors');
+const Service = require('./common/Service');
 const ServiceDataModel = require('./common/ServiceDataModel');
 const ServiceBuilder = require('./common/ServiceBuilder');
 const SphinxConfigurator = require('./sphinx/SphinxConfigurator');
@@ -11,10 +12,10 @@ const SystemctlExecutor = require('./helpers/SystemctlExecutor');
 const DataStorageClient = require('./helpers/DataStorageClient');
 
 class ServiceRegister {
-    static add(url) {
+    static add(options) {
         let service;
         return FileManager.prepareTempDirectory()
-            .then(() => PackageHelper.downloadPackageAndGetConfig(url))
+            .then(() => PackageHelper.downloadPackageAndGetConfig(options))
             .then((config) => service = ServiceBuilder.buildFrom(config))
             .then(() => DataStorageClient.checkServiceExists(service.serviceName))
             .then((exists) => {
@@ -26,6 +27,7 @@ class ServiceRegister {
             .then(() => SphinxConfigurator.addCommands(service))
             .then(() => FileManager.copyFiles(service))
             .then(() => FileManager.removeTempDirectory())
+            .then(() => Service.performPostAction(service))
             .then(() => DataStorageClient.addNewService(service))
             .then(() => SystemctlExecutor.applyChanges())
             .catch((err) => {
@@ -34,7 +36,7 @@ class ServiceRegister {
                 if (err instanceof errors.ServiceMaintenanceError) {
                     throw err;
                 } else {
-                    throw  new errors.ServiceMaintenanceError('Failed to install application', err);
+                    throw new errors.ServiceMaintenanceError('Failed to install application', err);
                 }
             });
     }

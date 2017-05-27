@@ -59,6 +59,10 @@ class Service {
         return `${this._servicesPath}/${this.directoryName}/${this.directoryName}`;
     }
 
+    performPostAction() {
+        return Promise.resolve();
+    }
+
     toStorageModel() {
         return {
             identifier: this.identifier,
@@ -66,6 +70,10 @@ class Service {
             description: this.description,
             commands: this.commands,
         };
+    }
+
+    static performPostAction(service) {
+        return service.performPostAction();
     }
 }
 

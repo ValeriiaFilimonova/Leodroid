@@ -1,0 +1,11 @@
+#JSGF V1.0 utf-8 en;
+grammar grammar;
+
+public <startApp> = open the app <appName>;
+public <stopApp> = close the app <appName>;
+public <readPoem> = read me the poem;
+public <sayName> = what is your name;
+public <move> = move;
+public <stop> = stop;
+public <changeDirection> = change direction;
+<appName> = " ";

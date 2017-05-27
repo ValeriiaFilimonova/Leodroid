@@ -1,6 +1,4 @@
-import message.bus.MessageBusFactory;
-import message.bus.TextSynthesisBus;
-import message.bus.VoiceCommandBus;
+import droid.api.Droid;
 import net.aksingh.owmjapis.CurrentWeather;
 import net.aksingh.owmjapis.OpenWeatherMap;
 import org.slf4j.Logger;
@@ -20,8 +18,7 @@ public class WeatherService implements SignalHandler {
         System.setProperty("org.slf4j.simpleLogger.showThreadName", "false");
     }
 
-    private VoiceCommandBus commandBus = MessageBusFactory.getVoiceCommandBus();
-    private TextSynthesisBus synthesisBus = MessageBusFactory.getTextSynthesisBus();
+    private Droid droid = Droid.getInstance();
     private OpenWeatherMap openWeatherMap = new OpenWeatherMap(API_KEY);
     private Logger logger = LoggerFactory.getLogger(WeatherService.class);
 
@@ -58,14 +55,14 @@ public class WeatherService implements SignalHandler {
         String city = getCityFromMessage(message, measure.getCommandStart());
         float value = request.apply(city);
         String response = String.format(measure.getResponseFormat(), value);
-        synthesisBus.sendText(response);
+        droid.say(response);
         logger.info(message + response);
     }
 
     private void start() {
         logger.info("Service started");
         openWeatherMap.setUnits(OpenWeatherMap.Units.METRIC);
-        commandBus.setConsumer((message) -> {
+        droid.listen((message) -> {
             try {
                 if (message.startsWith(WeatherParameters.TEMPERATURE.toString())) {
                     runCommand(message, WeatherParameters.TEMPERATURE, this::getTemperature);
@@ -84,8 +81,7 @@ public class WeatherService implements SignalHandler {
     }
 
     @Override public void handle(Signal signal) {
-        commandBus.closeConnection();
-        synthesisBus.closeConnection();
+        droid.destroy();
         logger.info("Service stopped");
     }
 

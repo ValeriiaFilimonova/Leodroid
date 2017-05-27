@@ -2,13 +2,15 @@
 
 cd $(dirname $0)
 
+echo -e "-----STARTED INSTALLATION-----\n"
+
 # Espeak setup
 
 if [ -z "$(espeak --version | grep 'eSpeak text-to-speech')" ]
 then
     apt-get install -y espeak
 fi
-echo "eSpeak installed"
+echo -e "\teSpeak installed"
 
 # Redis setup
 
@@ -16,12 +18,13 @@ if [ -z "$(redis-cli -v | grep '3.')" ]
 then
     apt-get install -y redis-server
 fi
-echo "redis installed"
+echo -e "\tredis installed"
+echo
 
-# systemd services setup
 ./compile.sh
 ./systemd.sh
 ./copy.sh
 
 systemctl daemon-reload
-echo "services enabled"
+systemctl start droid-system.target
+echo -e "\n-----INSTALLATION FINISHED-----\n"

@@ -10,7 +10,7 @@ const errors = require('../Errors');
 class GrammarManager {
     constructor(path) {
         this._grammarPath = path;
-        this._excludedAppNames = ["application-managing"];
+        this._excludedAppNames = ["application-managing", "speech-synthesis", "arduino-moving"];
         this._writeFile = bluebird.promisify(fs.writeFile);
     }
 
@@ -65,7 +65,7 @@ class GrammarManager {
         const paramsInUse = [];
         let param;
 
-        while ((param = regexp.exec(rule)) != null) {
+        while ((param = regexp.exec(rule)) !== null) {
             const paramStr = param[0];
             const paramKey = paramStr.substring(1, paramStr.length - 1);
 

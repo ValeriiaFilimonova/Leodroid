@@ -6,11 +6,11 @@ source ../env.opts
 DATA_STORAGE_UNIT_FILE="
 [Unit]
 Description=NodeJS Redis Based Data Storage Service
-Requires=redis-server.service
 
 [Service]
 Type=simple
 Restart=on-failure
+RestartSec=2
 ExecStart=${SERVICES_PATH}/${DATA_STORAGE_NAME}/${DATA_STORAGE_NAME}
 "
 

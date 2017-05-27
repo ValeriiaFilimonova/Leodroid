@@ -1,16 +1,10 @@
 .idea/
 *.iml
-*/cmake-build-debug
-*/node_modules
-*/tmp
 
 bin/
+exe/
+node_modules/
 out/
-temp/
 units/
 
-
-# Temporarily
-/MovingService/
-/SpeechRecognitionService/src/models/ru/
-/SpeechRecognitionService/src/models/sphinx.config.xml
+MovingService/src/old/

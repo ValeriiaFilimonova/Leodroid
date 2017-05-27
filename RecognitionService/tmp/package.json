@@ -1,0 +1,9 @@
+{
+  "name": "speech-recognition-service",
+  "version": "1.0.0",
+  "description": "Wit.ai and arecord based NodeJS Recognition Service",
+  "main": "src/RecognitionService.js",
+  "scripts": {
+    "start": "node src/RecognitionService.js"
+  }
+}

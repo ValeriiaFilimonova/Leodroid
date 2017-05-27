@@ -32,6 +32,39 @@ module.exports = [
     {
         applicationName: 'Droid Speech Synthesis Service',
         serviceName: 'speech-synthesis',
-        description: 'C++ Espeak Based Speech Synthesis Service'
+        description: 'NodeJS Espeak Based Speech Synthesis Service',
+        commands: {
+            rules: {
+                readPoem: {
+                    rule: 'Read me the poem',
+                    description: 'Reads short version of the poem by Vincent Price'
+                },
+                sayName: {
+                    rule: 'What is your name',
+                    description: 'Tells its name'
+                }
+            },
+        }
+    },
+    {
+        applicationName: 'Droid Adruino Moving Service',
+        serviceName: 'arduino-moving',
+        description: 'Java UPM Based Moving Service',
+        commands: {
+            rules: {
+                move: {
+                    rule: 'Move',
+                    description: 'Starts moving'
+                },
+                stop: {
+                    rule: 'Stop',
+                    description: 'Stops moving'
+                },
+                changeDirection: {
+                    rule: 'Change direction',
+                    description: 'Changes moving direction'
+                }
+            },
+        }
     }
 ];

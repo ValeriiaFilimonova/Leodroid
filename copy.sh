@@ -3,21 +3,16 @@
 cd $(dirname $0)
 source ./env.opts
 
-# copy folders with dependencies and services
+echo -e "-----STARTED COPYING FILES-----\n"
 
-if [ -d "$DEPS_PATH" ];
-then
-    rm -r $DEPS_PATH
-fi
-if [ -d "$SERVICES_PATH" ];
-then
-    rm -r $SERVICES_PATH
-fi
+mkdir -p $DEPS_PATH
+mkdir -p $SERVICES_PATH
+mkdir -p $MODELS_PATH
 
-cp -r ./lib $DEPS_PATH
-cp -r ./exe $SERVICES_PATH
-cp -r ./units/* $SYSTEMD_PATH
-cp -r ./MonitoringService/src/*.sh $SERVICES_PATH
-cp -r ./SpeechRecognitionService/src/models $SERVICES_PATH
+cp -rf ./lib/* $DEPS_PATH
+cp -rf ./exe/* $SERVICES_PATH
+cp -rf ./units/* $SYSTEMD_PATH
+cp -rf ./MonitoringService/src/*.sh $SERVICES_PATH
+cp -rf ./$SPEECH_RECOGNITION_NAME/src/models/* $MODELS_PATH
 
-echo "files copied"
+echo -e "-----FILES COPIED-----\n"

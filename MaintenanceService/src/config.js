@@ -1,15 +1,13 @@
 'use strict';
 
-const servicesPath = '/usr/share/droid-system';
-
 module.exports = {
     path: {
         dir: {
-            models: process.env.MODELS_DIRECTORY || servicesPath + '/models/en',
-            temporary: process.env.TEMP_DIRECTORY || servicesPath + '/temp',
-            services: servicesPath,
-            libraries: '/usr/lib/droid-system',
-            systemd: '/etc/systemd/system',
+            models: process.env.MODELS_DIRECTORY || '/home/root/share/models/en',
+            temporary: process.env.TEMP_DIRECTORY || '/home/root/temp',
+            services: process.env.EXE_DIRECTORY || '/home/root/exe',
+            libraries: process.env.LIB_DIRECTORY || '/home/root/lib',
+            systemd: process.env.UNITS_DIRECTORY || '/etc/systemd/system',
         },
         file: {
             fullDictionary: 'dictionary.dict.full',
@@ -20,5 +18,8 @@ module.exports = {
     },
     dataStorage: {
         host: 'http://localhost:8888',
+        dropbox: {
+            accessToken: ''
+        }
     }
 };
